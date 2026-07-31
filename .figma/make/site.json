@@ -7,6 +7,9 @@
   "analytics": {
     "googleAnalyticsId": "G-KFF4J6MGKH"
   },
+  "customScripts": {
+    "headEnd": "<meta name=\"google-site-verification\" content=\"05-Qe9nbFHZC0gZ8mFEE-zTM3178xbitFdWKlec22GI\">"
+  },
   "accessibility": {
     "addBypassLinks": false,
     "ignoreReducedMotion": false
