@@ -13,3 +13,4 @@ logs/
 .claude-replay.*
 .tmp-*
 .vercel
+supabase/.temp
