@@ -1,7 +1,8 @@
 {
-  "description": "A modern landing site showcasing digital branding, web development, and sales growth services with interactive project quoting and portfolio display.",
+  "title": "Alo Studio | Diseño y Desarrollo Web",
+  "description": "Agencia digital en Lima, Perú: diseño UI/UX, desarrollo web, e-commerce y branding para hacer crecer tu marca.",
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,
