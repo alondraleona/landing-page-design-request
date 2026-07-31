@@ -1221,7 +1221,7 @@ function ScheduleButton() {
     return () => script?.removeEventListener('load', renderButton)
   }, [])
 
-  return <div ref={ref} />
+  return <div ref={ref} className="w-full max-w-full overflow-hidden [&_iframe]:max-w-full" />
 }
 
 function Contact() {
