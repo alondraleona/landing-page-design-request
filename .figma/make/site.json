@@ -1,0 +1,10 @@
+{
+  "description": "A modern landing site showcasing digital branding, web development, and sales growth services with interactive project quoting and portfolio display.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
