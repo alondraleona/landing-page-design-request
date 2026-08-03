@@ -151,7 +151,7 @@ function Navbar() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg pt-24 sm:pt-28 lg:pt-36">
       {/* Ambient blobs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)', filter: 'blur(40px)' }} />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(229,169,60,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }} />
