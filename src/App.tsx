@@ -1281,8 +1281,8 @@ function Contact() {
 
             <div className="space-y-5">
               {[
-                { icon: '✉', label: 'Email', value: 'hola@alo.studio' },
-                { icon: '📍', label: 'Ubicación', value: 'Lima, Perú · Clientes globales' },
+                { icon: '✉', label: 'Email', value: 'hola@alostudio.pe' },
+                { icon: '📍', label: 'Ubicación', value: 'Perú · Clientes globales' },
                 { icon: '⚡', label: 'Respuesta', value: 'Menos de 24 horas' },
               ].map((c) => (
                 <div key={c.label} className="flex items-center gap-4">
