@@ -1,0 +1,73 @@
+---
+const stats = [
+  { value: '40+', label: 'Proyectos entregados' },
+  { value: '3×', label: 'ROI promedio cliente' },
+  { value: '98%', label: 'Satisfacción' },
+]
+---
+
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg pt-24 sm:pt-28 lg:pt-36">
+  {/* Ambient blobs */}
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(229,169,60,0.12) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+
+  <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+    {/* Badge */}
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold tracking-wider uppercase"
+      style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)', color: '#7BAAF7', fontFamily: 'Inter, sans-serif' }}>
+      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+      Agencia digital · Lima, Perú
+    </div>
+
+    {/* Headline */}
+    <h1 class="heading font-extrabold leading-none mb-6"
+      style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', letterSpacing: '-0.03em' }}>
+      Tu marca, tu{' '}
+      <span style={{ color: '#2563EB' }}>presencia</span>
+      <br />
+      tu próximo nivel de{' '}
+      <span style={{ color: '#E5A93C' }}>ventas</span>
+    </h1>
+
+    {/* Subheadline */}
+    <p class="text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
+      style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', fontFamily: 'Inter, sans-serif' }}>
+      Construimos marcas que dominan mercados. Desde el diseño hasta la automatización —
+      llevamos tu negocio del punto A al punto donde la competencia ya no alcanza.
+    </p>
+
+    {/* CTAs */}
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a
+        href="#contacto"
+        class="px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-200 hover:scale-105 hover:shadow-lg"
+        style={{ background: '#2563EB', boxShadow: '0 0 24px rgba(37,99,235,0.45)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+      >
+        Cotiza tu proyecto →
+      </a>
+      <a
+        href="/portafolio"
+        class="px-8 py-4 rounded-xl font-semibold text-white/80 text-base transition-all duration-200 hover:text-white glass"
+        style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+      >
+        Ver portafolio
+      </a>
+    </div>
+
+    {/* Stats */}
+    <div class="mt-20 grid grid-cols-3 gap-6 max-w-xl mx-auto">
+      {stats.map((s) => (
+        <div class="text-center">
+          <div class="heading font-extrabold mb-1" style={{ fontSize: '2rem', color: '#E5A93C' }}>{s.value}</div>
+          <div class="text-white/40 text-xs leading-tight" style={{ fontFamily: 'Inter, sans-serif' }}>{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Scroll hint */}
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30">
+    <span class="text-xs tracking-widest uppercase" style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.65rem' }}>Scroll</span>
+    <div class="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
+  </div>
+</section>

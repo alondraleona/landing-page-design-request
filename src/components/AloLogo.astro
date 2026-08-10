@@ -1,0 +1,44 @@
+---
+interface Props {
+  size?: 'sm' | 'md' | 'lg'
+}
+const { size = 'md' } = Astro.props
+const scales = { sm: 'scale-75', md: 'scale-100', lg: 'scale-125' }
+const iconBox = size === 'lg' ? 28 : size === 'sm' ? 18 : 22
+const iconSvg = size === 'lg' ? 16 : size === 'sm' ? 10 : 13
+---
+
+<div class={`flex items-center gap-2 ${scales[size]}`} style={{ transformOrigin: 'left center' }}>
+  <div class="flex items-center gap-1.5">
+    <span
+      class="heading font-bold text-white"
+      style={{ fontSize: size === 'lg' ? '2rem' : size === 'sm' ? '1.1rem' : '1.4rem', letterSpacing: '-0.02em' }}
+    >
+      aló
+    </span>
+    <div
+      class="flex items-center justify-center rounded"
+      style={{
+        width: `${iconBox}px`,
+        height: `${iconBox}px`,
+        background: '#2563EB',
+        boxShadow: '0 0 12px rgba(37,99,235,0.5)',
+      }}
+    >
+      <svg viewBox="0 0 14 14" fill="none" style={{ width: `${iconSvg}px`, height: `${iconSvg}px` }}>
+        <path d="M3 11L11 3M11 3H5M11 3V9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+  <span
+    class="heading font-semibold"
+    style={{
+      color: '#E5A93C',
+      fontSize: size === 'lg' ? '1rem' : size === 'sm' ? '0.65rem' : '0.8rem',
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+    }}
+  >
+    Studio
+  </span>
+</div>
