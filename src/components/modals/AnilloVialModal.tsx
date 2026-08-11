@@ -1,13 +1,6 @@
-import { useEffect } from 'react'
+import AnimatedModal from './AnimatedModal'
 
 export default function AnilloVialModal({ onClose }: { onClose: () => void }) {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
-  }, [onClose])
-
   const metrics = [
     { value: '100%', label: 'Responsive\nmobile-first' },
     { value: '<3', label: 'Clics para\nacceso clave' },
@@ -26,15 +19,9 @@ export default function AnilloVialModal({ onClose }: { onClose: () => void }) {
   ]
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6"
-      style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
-    >
-      <div
-        className="relative w-full md:max-w-4xl max-h-[94vh] md:max-h-[90vh] overflow-y-auto rounded-t-3xl md:rounded-2xl"
-        style={{ background: '#0F131C', border: '1px solid rgba(37,99,235,0.25)' }}
-      >
+    <AnimatedModal onClose={onClose} borderColor="rgba(37,99,235,0.25)">
+      {(handleClose) => (
+        <>
         {/* Sticky header */}
         <div
           className="sticky top-0 z-10 flex items-center justify-between px-6 py-4"
@@ -50,7 +37,7 @@ export default function AnilloVialModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -226,14 +213,14 @@ export default function AnilloVialModal({ onClose }: { onClose: () => void }) {
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <a
               href="#contacto"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-3.5 rounded-xl text-center font-bold text-white text-sm transition-all duration-200 hover:scale-105"
               style={{ background: '#2563EB', boxShadow: '0 0 24px rgba(37,99,235,0.35)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             >
               Quiero un proyecto así →
             </a>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="px-6 py-3.5 rounded-xl text-sm font-semibold text-white/60 hover:text-white transition-colors"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             >
@@ -241,7 +228,8 @@ export default function AnilloVialModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+        </>
+      )}
+    </AnimatedModal>
   )
 }

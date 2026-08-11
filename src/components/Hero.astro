@@ -1,8 +1,8 @@
 ---
 const stats = [
-  { value: '40+', label: 'Proyectos entregados' },
-  { value: '3×', label: 'ROI promedio cliente' },
-  { value: '98%', label: 'Satisfacción' },
+  { value: 40, suffix: '+', label: 'Proyectos entregados' },
+  { value: 3, suffix: '×', label: 'ROI promedio cliente' },
+  { value: 98, suffix: '%', label: 'Satisfacción' },
 ]
 ---
 
@@ -13,14 +13,14 @@ const stats = [
 
   <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
     {/* Badge */}
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold tracking-wider uppercase"
+    <div data-reveal class="opacity-0 translate-y-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold tracking-wider uppercase"
       style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)', color: '#7BAAF7', fontFamily: 'Inter, sans-serif' }}>
       <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
       Agencia digital · Lima, Perú
     </div>
 
     {/* Headline */}
-    <h1 class="heading font-extrabold leading-none mb-6"
+    <h1 data-reveal class="opacity-0 translate-y-6 heading font-extrabold leading-none mb-6"
       style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', letterSpacing: '-0.03em' }}>
       Tu marca, tu{' '}
       <span style={{ color: '#2563EB' }}>presencia</span>
@@ -30,14 +30,14 @@ const stats = [
     </h1>
 
     {/* Subheadline */}
-    <p class="text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
+    <p data-reveal class="opacity-0 translate-y-6 text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
       style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', fontFamily: 'Inter, sans-serif' }}>
       Construimos marcas que dominan mercados. Desde el diseño hasta la automatización —
       llevamos tu negocio del punto A al punto donde la competencia ya no alcanza.
     </p>
 
     {/* CTAs */}
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+    <div data-reveal class="opacity-0 translate-y-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
       <a
         href="#contacto"
         class="px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-200 hover:scale-105 hover:shadow-lg"
@@ -55,10 +55,10 @@ const stats = [
     </div>
 
     {/* Stats */}
-    <div class="mt-20 grid grid-cols-3 gap-6 max-w-xl mx-auto">
+    <div data-reveal class="opacity-0 translate-y-6 mt-20 grid grid-cols-3 gap-6 max-w-xl mx-auto">
       {stats.map((s) => (
         <div class="text-center">
-          <div class="heading font-extrabold mb-1" style={{ fontSize: '2rem', color: '#E5A93C' }}>{s.value}</div>
+          <div class="heading font-extrabold mb-1" style={{ fontSize: '2rem', color: '#E5A93C' }}><span data-count-to={s.value}>0</span>{s.suffix}</div>
           <div class="text-white/40 text-xs leading-tight" style={{ fontFamily: 'Inter, sans-serif' }}>{s.label}</div>
         </div>
       ))}
@@ -71,3 +71,41 @@ const stats = [
     <div class="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
   </div>
 </section>
+
+<script>
+  import { gsap, prefersReducedMotion } from '@/lib/gsap'
+
+  const hero = document.querySelector('#hero')
+  if (hero) {
+    const revealEls = hero.querySelectorAll<HTMLElement>('[data-reveal]')
+    const counters = hero.querySelectorAll<HTMLElement>('[data-count-to]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+      counters.forEach((el) => {
+        el.textContent = el.dataset.countTo ?? '0'
+      })
+    } else {
+      const tl = gsap.timeline({ delay: 0.15 })
+      tl.to(revealEls, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.12 })
+
+      counters.forEach((el) => {
+        const target = Number(el.dataset.countTo ?? '0')
+        const proxy = { val: 0 }
+        tl.to(
+          proxy,
+          {
+            val: target,
+            duration: 1.2,
+            ease: 'power2.out',
+            snap: { val: 1 },
+            onUpdate: () => {
+              el.textContent = String(proxy.val)
+            },
+          },
+          '<',
+        )
+      })
+    }
+  }
+</script>

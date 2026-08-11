@@ -1,13 +1,6 @@
-import { useEffect } from 'react'
+import AnimatedModal from './AnimatedModal'
 
 export default function VidanaModal({ onClose }: { onClose: () => void }) {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
-  }, [onClose])
-
   const applications = [
     { num: '01', title: 'Packaging que abre el apetito', desc: 'Sistema listo para empaques, etiquetas y formatos de producto sin perder reconocimiento.' },
     { num: '02', title: 'Presencia que acompaña', desc: 'Aplicaciones coherentes para uniformes, punto de venta y comunicación cotidiana.' },
@@ -15,11 +8,12 @@ export default function VidanaModal({ onClose }: { onClose: () => void }) {
   ]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)' }} onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="relative w-full md:max-w-4xl max-h-[94vh] md:max-h-[90vh] overflow-y-auto rounded-t-3xl md:rounded-2xl" style={{ background: '#0F131C', border: '1px solid rgba(123,170,247,0.28)' }}>
+    <AnimatedModal onClose={onClose} borderColor="rgba(123,170,247,0.28)">
+      {(handleClose) => (
+        <>
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4" style={{ background: 'rgba(15,19,28,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-3"><div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden" style={{ background: '#7BAAF7' }}><img src="/images/vidana/isologo.png" alt="" className="w-6 h-6 object-contain" /></div><div><div className="text-xs font-bold uppercase tracking-widest" style={{ color: '#7BAAF7', fontFamily: 'Inter, sans-serif' }}>Caso de Estudio · Branding</div><div className="heading font-bold text-white text-sm">VIDANA</div></div></div>
-          <button onClick={onClose} aria-label="Cerrar caso de estudio" className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button>
+          <button onClick={handleClose} aria-label="Cerrar caso de estudio" className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg></button>
         </div>
 
         <div className="px-6 pb-10 space-y-10 pt-6">
@@ -52,9 +46,10 @@ export default function VidanaModal({ onClose }: { onClose: () => void }) {
 
           <div><div className="flex items-center gap-2 mb-5"><span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: '#E5A93C', color: '#0F131C' }}>4</span><h3 className="heading font-bold text-white">Una identidad preparada para crecer</h3></div><div className="space-y-3">{applications.map((item) => <div key={item.num} className="flex gap-4 rounded-xl p-5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}><span className="heading font-extrabold text-xl opacity-55" style={{ color: item.num === '02' ? '#E5A93C' : '#7BAAF7' }}>{item.num}</span><div><h4 className="heading font-bold text-white text-sm mb-1">{item.title}</h4><p className="text-white/55 text-xs leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{item.desc}</p></div></div>)}</div></div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-2"><a href="https://www.instagram.com/p/DLMBKN-NtNO/?img_index=13" target="_blank" rel="noreferrer" className="flex-1 py-3.5 rounded-xl text-center font-bold text-sm transition-all duration-200 hover:scale-105" style={{ background: '#7BAAF7', color: '#0F131C', boxShadow: '0 0 24px rgba(123,170,247,0.28)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Ver proyecto en Instagram ↗</a><a href="#contacto" onClick={onClose} className="px-5 py-3.5 rounded-xl text-center text-sm font-semibold text-white/70 hover:text-white transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Quiero una marca así →</a><button onClick={onClose} aria-label="Cerrar" className="px-4 py-3.5 rounded-xl text-sm font-semibold text-white/60 hover:text-white transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Cerrar</button></div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2"><a href="https://www.instagram.com/p/DLMBKN-NtNO/?img_index=13" target="_blank" rel="noreferrer" className="flex-1 py-3.5 rounded-xl text-center font-bold text-sm transition-all duration-200 hover:scale-105" style={{ background: '#7BAAF7', color: '#0F131C', boxShadow: '0 0 24px rgba(123,170,247,0.28)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Ver proyecto en Instagram ↗</a><a href="#contacto" onClick={handleClose} className="px-5 py-3.5 rounded-xl text-center text-sm font-semibold text-white/70 hover:text-white transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Quiero una marca así →</a><button onClick={handleClose} aria-label="Cerrar" className="px-4 py-3.5 rounded-xl text-sm font-semibold text-white/60 hover:text-white transition-colors" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Cerrar</button></div>
         </div>
-      </div>
-    </div>
+        </>
+      )}
+    </AnimatedModal>
   )
 }

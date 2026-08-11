@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
 import AnilloVialModal from './modals/AnilloVialModal'
 import EventosModal from './modals/EventosModal'
 import VidanaModal from './modals/VidanaModal'
@@ -85,6 +86,8 @@ const portfolio = [
   },
 ]
 
+type TiltSetters = { rx: (v: number) => void; ry: (v: number) => void; y: (v: number) => void }
+
 export default function Portfolio() {
   const [active, setActive] = useState<number | null>(null)
   const [caseStudyOpen, setCaseStudyOpen] = useState(false)
@@ -93,6 +96,65 @@ export default function Portfolio() {
   const [aventuraOpen, setAventuraOpen] = useState(false)
   const [kuyakOpen, setKuyakOpen] = useState(false)
   const [worklineOpen, setWorklineOpen] = useState(false)
+
+  const gridRef = useRef<HTMLDivElement>(null)
+  const innerRefs = useRef<Map<number, HTMLDivElement>>(new Map())
+  const tiltSetters = useRef<Map<number, TiltSetters>>(new Map())
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) {
+        gsap.set('[data-reveal]', { opacity: 1, y: 0 })
+      } else {
+        gsap.to('[data-reveal]', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.08,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: gridRef.current, start: 'top 85%', once: true },
+        })
+        window.addEventListener('load', () => ScrollTrigger.refresh())
+      }
+    }, gridRef)
+    return () => ctx.revert()
+  }, [])
+
+  const getTiltSetters = (i: number): TiltSetters | undefined => {
+    let setters = tiltSetters.current.get(i)
+    if (!setters) {
+      const el = innerRefs.current.get(i)
+      if (!el) return undefined
+      setters = {
+        rx: gsap.quickTo(el, 'rotationX', { duration: 0.4, ease: 'power3.out' }),
+        ry: gsap.quickTo(el, 'rotationY', { duration: 0.4, ease: 'power3.out' }),
+        y: gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3.out' }),
+      }
+      tiltSetters.current.set(i, setters)
+    }
+    return setters
+  }
+
+  const handleTilt = (e: React.MouseEvent<HTMLDivElement>, i: number) => {
+    if (prefersReducedMotion()) return
+    const setters = getTiltSetters(i)
+    if (!setters) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width - 0.5
+    const py = (e.clientY - rect.top) / rect.height - 0.5
+    setters.ry(px * 10)
+    setters.rx(-py * 10)
+    setters.y(-8)
+  }
+
+  const resetTilt = (i: number) => {
+    const setters = tiltSetters.current.get(i)
+    if (!setters) return
+    setters.rx(0)
+    setters.ry(0)
+    setters.y(0)
+  }
 
   return (
     <section id="portafolio" className="py-28 px-6 relative">
@@ -118,20 +180,22 @@ export default function Portfolio() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {portfolio.map((p, i) => {
             const isActive = active === i
             return (
               <div
                 key={p.title}
-                className="relative rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:-translate-y-2"
+                data-reveal
+                className="opacity-0 translate-y-8 relative rounded-2xl overflow-hidden cursor-pointer group hover:z-10"
                 style={{
                   border: isActive ? `1px solid ${p.color}44` : '1px solid rgba(255,255,255,0.07)',
                   boxShadow: isActive ? `0 12px 40px ${p.color}22` : 'none',
-                  transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
+                  transition: 'border-color 0.35s ease, box-shadow 0.35s ease',
                 }}
                 onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
+                onMouseMove={(e) => handleTilt(e, i)}
+                onMouseLeave={() => { setActive(null); resetTilt(i) }}
                 onClick={() => {
                 if ((p as any).caseStudy) setCaseStudyOpen(true)
                 if ((p as any).caseStudyEventos) setEventosOpen(true)
@@ -140,6 +204,15 @@ export default function Portfolio() {
                 if ((p as any).caseStudyKuyak) setKuyakOpen(true)
                 if ((p as any).caseStudyWorkline) setWorklineOpen(true)
               }}
+              >
+              <div
+                ref={(el) => {
+                  if (el) {
+                    innerRefs.current.set(i, el)
+                    gsap.set(el, { transformPerspective: 800 })
+                  }
+                }}
+                style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden" style={{ background: '#1a2030' }}>
@@ -279,6 +352,7 @@ export default function Portfolio() {
                     </div>
                   )}
                 </div>
+              </div>
               </div>
             )
           })}

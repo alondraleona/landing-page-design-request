@@ -38,7 +38,7 @@ const services = [
 
 <section id="servicios" class="py-28 px-6 relative">
   <div class="max-w-6xl mx-auto">
-    <div class="mb-16">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16">
       <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
         — Nuestros Servicios
       </span>
@@ -54,7 +54,8 @@ const services = [
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {services.map((s) => (
         <div
-          class="relative rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 cursor-default group"
+          data-reveal
+          class="opacity-0 translate-y-6 relative rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 cursor-default group"
           style={{
             background: s.featured
               ? 'linear-gradient(135deg, rgba(229,169,60,0.12) 0%, rgba(37,99,235,0.08) 100%)'
@@ -96,3 +97,33 @@ const services = [
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#servicios')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          once: true,
+        },
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>
+
