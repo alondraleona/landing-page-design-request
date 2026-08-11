@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { sanityClient } from 'sanity:client'
+import { urlFor } from '../../sanity/lib/urlFor'
+
+interface Post {
+  title: string
+  slug: string
+  excerpt?: string
+  coverImage?: any
+  publishedAt: string
+}
+
+const posts: Post[] = await sanityClient.fetch(`
+  *[_type == "post"] | order(publishedAt desc) {
+    title,
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    publishedAt
+  }
+`)
+
+const dateFormatter = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
+---
+
+<Layout
+  title="Blog | Alo Studio"
+  description="Ideas sobre diseño, desarrollo web y marca, escritas desde aló Studio."
+  path="/blog"
+>
+  <section class="pt-32 pb-28 px-6">
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-16">
+        <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+          — Blog
+        </span>
+        <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}>
+          Ideas sobre diseño<br />
+          <span style={{ color: '#2563EB' }}>y desarrollo web</span>
+        </h1>
+      </div>
+
+      {posts.length === 0 ? (
+        <p class="text-white/40 text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>Todavía no hay posts publicados.</p>
+      ) : (
+        <div class="flex flex-col">
+          {posts.map((post, i) => (
+            <a
+              href={`/blog/${post.slug}`}
+              class="group py-10 flex flex-col sm:flex-row gap-6 items-start"
+              style={i > 0 ? { borderTop: '1px solid rgba(255,255,255,0.08)' } : {}}
+            >
+              <div class="flex-1">
+                <div class="text-white/40 text-xs mb-3" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  {dateFormatter.format(new Date(post.publishedAt))}
+                </div>
+                <h2 class="heading font-bold text-white mb-2 transition-colors duration-200 group-hover:text-[#7BAAF7]" style={{ fontSize: '1.4rem', letterSpacing: '-0.01em' }}>
+                  {post.title}
+                </h2>
+                {post.excerpt && (
+                  <p class="text-white/55 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem' }}>
+                    {post.excerpt}
+                  </p>
+                )}
+              </div>
+              {post.coverImage && (
+                <img
+                  src={urlFor(post.coverImage).width(320).height(220).fit('crop').auto('format').url()}
+                  alt={post.title}
+                  class="w-full sm:w-40 h-40 sm:h-28 object-cover rounded-xl flex-shrink-0"
+                  loading="lazy"
+                />
+              )}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

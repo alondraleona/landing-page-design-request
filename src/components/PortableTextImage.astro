@@ -1,0 +1,8 @@
+---
+import { urlFor } from '../sanity/lib/urlFor'
+
+const { node } = Astro.props
+const src = urlFor(node).width(1000).auto('format').url()
+---
+
+<img src={src} alt={node.alt ?? ''} class="w-full rounded-xl my-8" loading="lazy" />
