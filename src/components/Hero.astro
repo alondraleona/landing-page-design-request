@@ -89,7 +89,10 @@ const stats = [
       const tl = gsap.timeline({ delay: 0.15 })
       tl.to(revealEls, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.12 })
 
-      counters.forEach((el) => {
+      // Start the count-up only once the stats block has actually faded in —
+      // running it in parallel with the reveal meant the numbers finished
+      // counting while still invisible, so it looked like they never animated.
+      counters.forEach((el, i) => {
         const target = Number(el.dataset.countTo ?? '0')
         const proxy = { val: 0 }
         tl.to(
@@ -103,7 +106,7 @@ const stats = [
               el.textContent = String(proxy.val)
             },
           },
-          '<',
+          i === 0 ? '-=0.1' : '<',
         )
       })
     }
