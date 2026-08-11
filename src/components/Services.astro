@@ -1,0 +1,129 @@
+---
+const services = [
+  {
+    icon: '✦',
+    title: 'UI / UX Design',
+    tagline: 'Interfaces que convierten',
+    desc: 'Diseñamos experiencias centradas en el usuario que reducen la fricción y maximizan la conversión. Desde wireframes hasta prototipos interactivos con Figma.',
+    features: ['Auditoría UX / Heurística', 'Design System completo', 'Prototipo navegable', 'Handoff a desarrollo'],
+    accent: '#2563EB',
+  },
+  {
+    icon: '◈',
+    title: 'E-commerce',
+    tagline: 'Tiendas que venden solas',
+    desc: 'Construimos plataformas de e-commerce de alto rendimiento: Shopify, WooCommerce o custom. Optimizadas para checkout rápido y máxima tasa de conversión.',
+    features: ['Shopify / WooCommerce', 'Pasarela de pagos local', 'SEO técnico incluido', 'Analytics avanzado'],
+    accent: '#E5A93C',
+    featured: true,
+  },
+  {
+    icon: '⬡',
+    title: 'Automatizaciones API',
+    tagline: 'Tu negocio en piloto automático',
+    desc: 'Conectamos tus herramientas, automatizamos procesos repetitivos e integramos IA para que tu equipo enfoque su energía en lo que realmente importa.',
+    features: ['Zapier / Make / n8n', 'Integraciones CRM', 'Bots de atención IA', 'Dashboards en tiempo real'],
+    accent: '#7BAAF7',
+  },
+  {
+    icon: '◎',
+    title: 'Branding & Identidad',
+    tagline: 'Marcas que se recuerdan',
+    desc: 'Construimos identidades visuales sólidas y coherentes: desde el naming y la estrategia de marca hasta el manual completo que tu equipo puede usar de forma autónoma.',
+    features: ['Naming & estrategia de marca', 'Logo + sistema visual', 'Manual de identidad', 'Aplicaciones en piezas reales'],
+    accent: '#E5A93C',
+  },
+]
+---
+
+<section id="servicios" class="py-28 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+        — Nuestros Servicios
+      </span>
+      <h2 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+        Todo lo que necesitas para<br />
+        <span style={{ color: '#2563EB' }}>escalar en digital</span>
+      </h2>
+      <p class="text-white/50 max-w-lg" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+        Tres áreas de especialización, una sola visión: hacer crecer tu negocio de forma sostenida y medible.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {services.map((s) => (
+        <div
+          data-reveal
+          class="opacity-0 translate-y-6 relative rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 cursor-default group"
+          style={{
+            background: s.featured
+              ? 'linear-gradient(135deg, rgba(229,169,60,0.12) 0%, rgba(37,99,235,0.08) 100%)'
+              : 'rgba(255,255,255,0.04)',
+            border: s.featured ? '1px solid rgba(229,169,60,0.3)' : '1px solid rgba(255,255,255,0.07)',
+            backdropFilter: 'blur(12px)',
+          }}
+        >
+          {s.featured && (
+            <div class="absolute -top-3 left-6">
+              <span class="px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                Más popular
+              </span>
+            </div>
+          )}
+
+          <div class="mb-5 text-2xl" style={{ color: s.accent }}>{s.icon}</div>
+          <h3 class="heading font-bold text-lg text-white mb-1">{s.title}</h3>
+          <p class="text-xs font-semibold mb-4 uppercase tracking-wider" style={{ color: s.accent, fontFamily: 'Inter, sans-serif' }}>{s.tagline}</p>
+          <p class="text-white/55 text-sm leading-relaxed mb-6" style={{ fontFamily: 'Inter, sans-serif' }}>{s.desc}</p>
+
+          <ul class="space-y-2">
+            {s.features.map((f) => (
+              <li class="flex items-center gap-2 text-sm text-white/70" style={{ fontFamily: 'Inter, sans-serif' }}>
+                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: s.accent }} />
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          <div
+            class="mt-8 text-sm font-semibold flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ color: s.accent, fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+          >
+            Saber más <span>→</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#servicios')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          once: true,
+        },
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>
+
