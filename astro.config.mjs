@@ -20,7 +20,9 @@ export default defineConfig({
       dataset: PUBLIC_SANITY_DATASET,
       apiVersion: '2026-08-01',
       useCdn: false,
-      studioBasePath: '/studio',
+      // No studioBasePath: the Studio is deployed separately on Sanity's own
+      // hosted domain (via `npx sanity deploy`), not embedded on this site —
+      // alostudio.pe only reads published content, no admin route exists here.
     }),
   ],
   vite: {
