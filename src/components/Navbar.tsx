@@ -46,6 +46,7 @@ export default function Navbar() {
   const links = [
     { label: 'Servicios', to: '/servicios' },
     { label: 'Portafolio', to: '/portafolio' },
+    { label: 'Blog', to: '/blog' },
     { label: 'Contacto', to: '#contacto' },
   ]
 

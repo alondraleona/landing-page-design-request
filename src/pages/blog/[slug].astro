@@ -1,0 +1,73 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { PortableText } from 'astro-portabletext'
+import { sanityClient } from 'sanity:client'
+import { urlFor } from '../../sanity/lib/urlFor'
+import PortableTextImage from '../../components/PortableTextImage.astro'
+
+export async function getStaticPaths() {
+  const slugs: string[] = await sanityClient.fetch(`*[_type == "post" && defined(slug.current)].slug.current`)
+  return slugs.map((slug) => ({ params: { slug } }))
+}
+
+const { slug } = Astro.params
+
+const post = await sanityClient.fetch(
+  `*[_type == "post" && slug.current == $slug][0]{
+    title, excerpt, coverImage, body, publishedAt
+  }`,
+  { slug },
+)
+
+if (!post) {
+  return Astro.redirect('/blog', 302)
+}
+
+const dateFormatter = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
+
+const wordCount = (post.body ?? [])
+  .filter((block: any) => block._type === 'block')
+  .flatMap((block: any) => block.children ?? [])
+  .map((span: any) => span.text ?? '')
+  .join(' ')
+  .split(/\s+/)
+  .filter(Boolean).length
+const readingMinutes = Math.max(1, Math.round(wordCount / 200))
+---
+
+<Layout
+  title={`${post.title} | Alo Studio Blog`}
+  description={post.excerpt ?? ''}
+  path={`/blog/${slug}`}
+>
+  <article class="pt-32 pb-28 px-6">
+    <div class="max-w-2xl mx-auto">
+      <a href="/blog" class="inline-flex items-center gap-1.5 text-sm font-semibold mb-8 transition-colors duration-200" style={{ color: '#7BAAF7', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+        ← Volver al blog
+      </a>
+
+      <div class="text-white/40 text-sm mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+        {dateFormatter.format(new Date(post.publishedAt))} · {readingMinutes} min de lectura
+      </div>
+
+      <h1 class="heading font-extrabold leading-tight mb-8" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.8rem)', letterSpacing: '-0.02em' }}>
+        {post.title}
+      </h1>
+
+      {post.coverImage && (
+        <img
+          src={urlFor(post.coverImage).width(1200).height(675).fit('crop').auto('format').url()}
+          alt={post.title}
+          class="w-full rounded-2xl mb-12 object-cover"
+        />
+      )}
+
+      <div
+        class="text-white/80 leading-relaxed [&>p]:mb-6 [&>h2]:heading [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-12 [&>h2]:mb-4 [&>h3]:heading [&>h3]:font-bold [&>h3]:text-white [&>h3]:mt-10 [&>h3]:mb-3 [&_a]:underline [&_a]:decoration-[#7BAAF7] [&_strong]:text-white [&>ul]:mb-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:mb-6 [&>ol]:list-decimal [&>ol]:pl-6 [&_li]:mb-1.5 [&_blockquote]:border-l-2 [&_blockquote]:pl-5 [&_blockquote]:italic [&_blockquote]:text-white/60"
+        style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.15rem' }}
+      >
+        <PortableText value={post.body} components={{ type: { image: PortableTextImage } }} />
+      </div>
+    </div>
+  </article>
+</Layout>
