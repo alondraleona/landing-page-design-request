@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://alostudio.pe/sitemap-index.xml

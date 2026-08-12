@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import sanity from '@sanity/astro'
+import sitemap from '@astrojs/sitemap'
 
 const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
   process.env.NODE_ENV ?? 'development',
@@ -15,6 +16,7 @@ export default defineConfig({
   output: 'static',
   integrations: [
     react(),
+    sitemap(),
     sanity({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET,
