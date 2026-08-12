@@ -41,6 +41,25 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+    }),
+    defineField({
+      name: 'videoUrl',
+      title: 'Video (YouTube o Vimeo)',
+      type: 'url',
+      description: 'Pega el link del video. Se detecta solo si es horizontal o vertical.',
+    }),
+    defineField({
+      name: 'audioFile',
+      title: 'Audio',
+      type: 'file',
+      options: { accept: 'audio/*' },
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Fecha de publicación',
       type: 'datetime',
