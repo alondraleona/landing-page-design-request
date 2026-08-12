@@ -1,0 +1,134 @@
+---
+const reels = [
+  { src: '/videos/reels/reel-tv.mp4', poster: '/videos/reels/reel-tv.jpg', alt: 'Spot de TV — cobertura deportiva' },
+  { src: '/videos/reels/reel-suv.mp4', poster: '/videos/reels/reel-suv.jpg', alt: 'Campaña automotriz — SUV en ruta' },
+  { src: '/videos/reels/reel-pickup.mp4', poster: '/videos/reels/reel-pickup.jpg', alt: 'Campaña automotriz — pickup en playa' },
+  { src: '/videos/reels/reel-parriteca.mp4', poster: '/videos/reels/reel-parriteca.jpg', alt: 'La Parriteca — contenido de producto' },
+  { src: '/videos/reels/reel-jeep.mp4', poster: '/videos/reels/reel-jeep.jpg', alt: 'Jeep — campaña de aventura' },
+  { src: '/videos/reels/reel-cortes.mp4', poster: '/videos/reels/reel-cortes.jpg', alt: 'La Parriteca — cortes esenciales' },
+]
+
+// Swiper's loop mode needs noticeably more slides than fit on screen at once
+// (with slidesPerView: 'auto' it can't infer that count ahead of time), so
+// the source list is repeated to give it enough to clone from.
+const slides = [...reels, ...reels, ...reels]
+---
+
+<section id="reels" class="py-28 relative overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <div data-reveal class="opacity-0 translate-y-6 mb-12 max-w-2xl">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+        — Contenido audiovisual
+      </span>
+      <h2 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+        Piezas que también<br />
+        <span style={{ color: '#2563EB' }}>se mueven</span>
+      </h2>
+      <p class="text-white/50" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+        Spots, reels y piezas de campaña que producimos para nuestros clientes. Pasa el cursor sobre cada una para reproducirla.
+      </p>
+    </div>
+  </div>
+
+  <div data-reveal class="opacity-0 translate-y-6 swiper reels-swiper">
+    <div class="swiper-wrapper">
+      {slides.map((r) => (
+        <div class="swiper-slide reel-tile relative rounded-2xl overflow-hidden flex-shrink-0" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+          <img src={r.poster} alt={r.alt} class="poster absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <video class="clip absolute inset-0 w-full h-full object-cover opacity-0" muted loop playsinline preload="none" src={r.src} poster={r.poster} />
+          <div class="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(15,19,28,0) 60%, rgba(15,19,28,0.5) 100%)' }} />
+          <div class="play-hint absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-opacity duration-300" style={{ background: 'rgba(15,19,28,0.65)', backdropFilter: 'blur(6px)' }}>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3.5 2l6 4-6 4V2z" fill="white" /></svg>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .reels-swiper {
+    overflow: visible;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .reel-tile {
+    width: 200px;
+    height: 300px;
+  }
+  @media (min-width: 640px) {
+    .reel-tile {
+      width: 230px;
+      height: 340px;
+    }
+  }
+</style>
+
+<script>
+  import Swiper from 'swiper'
+  import { FreeMode, Autoplay } from 'swiper/modules'
+  import 'swiper/css'
+  import { prefersReducedMotion } from '@/lib/gsap'
+
+  document.querySelectorAll<HTMLElement>('#reels .reels-swiper').forEach((el) => {
+    const reduced = prefersReducedMotion()
+
+    const swiper = new Swiper(el, {
+      modules: [FreeMode, Autoplay],
+      slidesPerView: 'auto',
+      spaceBetween: 16,
+      loop: true,
+      loopAdditionalSlides: 6,
+      allowTouchMove: true,
+      freeMode: { enabled: true, momentum: false },
+      speed: 9000,
+      autoplay: reduced
+        ? false
+        : { delay: 1, disableOnInteraction: false, pauseOnMouseEnter: true },
+    })
+
+    el.querySelectorAll<HTMLElement>('.reel-tile').forEach((tile) => {
+      const video = tile.querySelector('video')
+      if (!video) return
+
+      tile.addEventListener('mouseenter', () => {
+        video.currentTime = 0
+        video.play().catch(() => {})
+        video.style.opacity = '1'
+        const hint = tile.querySelector<HTMLElement>('.play-hint')
+        if (hint) hint.style.opacity = '0'
+      })
+      tile.addEventListener('mouseleave', () => {
+        video.pause()
+        video.style.opacity = '0'
+        const hint = tile.querySelector<HTMLElement>('.play-hint')
+        if (hint) hint.style.opacity = '1'
+      })
+    })
+  })
+</script>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#reels')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>

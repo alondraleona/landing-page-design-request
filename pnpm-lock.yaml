@@ -44,6 +44,9 @@ importers:
       styled-components:
         specifier: ^6.5.2
         version: 6.5.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      swiper:
+        specifier: ^14.1.0
+        version: 14.1.0
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.10
@@ -5082,6 +5085,10 @@ packages:
     resolution: {integrity: sha512-ekx94z1rRc5LDi6oSUaeRnYhd0UOJxdtQCL2rF8xpWxD3TPAsISWOrxezqGovqS38GRZOdpDfvQe3ts6F7nsng==}
     engines: {node: '>=16'}
     hasBin: true
+
+  swiper@14.1.0:
+    resolution: {integrity: sha512-ppit/AqmGvThKlXy4I1/9N/gEyb9s/BDHWciWNeIxbfteFKUhPQXrYuOMKszomXKd9WiLd+/0vKdPHW+0N0mhA==}
+    engines: {node: '>= 4.7.0'}
 
   swr@2.5.0:
     resolution: {integrity: sha512-W0GomadRJe9OfzIoRX0kZHhDSaRRfdiOUeH6uazgR05SibBhDNwfdTbhAxmFtObvkf59fFymo22mooKukosvNA==}
@@ -11385,6 +11392,8 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
       sax: 1.6.1
+
+  swiper@14.1.0: {}
 
   swr@2.5.0(react@19.2.4):
     dependencies:
