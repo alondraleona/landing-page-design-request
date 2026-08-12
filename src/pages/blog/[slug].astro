@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import { PortableText } from 'astro-portabletext'
 import { sanityClient } from 'sanity:client'
 import { urlFor } from '../../sanity/lib/urlFor'
+import { resolveVideoEmbed } from '../../sanity/lib/videoEmbed'
 import PortableTextImage from '../../components/PortableTextImage.astro'
 
 export async function getStaticPaths() {
@@ -14,7 +15,8 @@ const { slug } = Astro.params
 
 const post = await sanityClient.fetch(
   `*[_type == "post" && slug.current == $slug][0]{
-    title, excerpt, coverImage, body, publishedAt
+    title, excerpt, coverImage, body, publishedAt, tags, videoUrl,
+    audioFile{asset->{url}}
   }`,
   { slug },
 )
@@ -33,6 +35,16 @@ const wordCount = (post.body ?? [])
   .split(/\s+/)
   .filter(Boolean).length
 const readingMinutes = Math.max(1, Math.round(wordCount / 200))
+
+const video = post.videoUrl ? await resolveVideoEmbed(post.videoUrl) : null
+
+const postUrl = new URL(`/blog/${slug}`, Astro.site).toString()
+const shareLinks = [
+  { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${post.title} ${postUrl}`)}` },
+  { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}` },
+  { label: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}` },
+  { label: 'X', href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(postUrl)}` },
+]
 ---
 
 <Layout
@@ -50,9 +62,19 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200))
         {dateFormatter.format(new Date(post.publishedAt))} · {readingMinutes} min de lectura
       </div>
 
-      <h1 class="heading font-extrabold leading-tight mb-8" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.8rem)', letterSpacing: '-0.02em' }}>
+      <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.8rem)', letterSpacing: '-0.02em' }}>
         {post.title}
       </h1>
+
+      {post.tags && post.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-8">
+          {post.tags.map((tag: string) => (
+            <span class="text-xs font-semibold px-3 py-1 rounded-full" style={{ background: 'rgba(37,99,235,0.12)', color: '#7BAAF7', fontFamily: 'Inter, sans-serif' }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
 
       {post.coverImage && (
         <img
@@ -62,11 +84,49 @@ const readingMinutes = Math.max(1, Math.round(wordCount / 200))
         />
       )}
 
+      {video && (
+        <div class="mb-12 flex justify-center">
+          <div
+            class="relative w-full overflow-hidden rounded-2xl"
+            style={{ maxWidth: video.isVertical ? '380px' : '100%', aspectRatio: String(video.aspectRatio) }}
+          >
+            <iframe
+              src={video.embedUrl}
+              class="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {post.audioFile?.asset?.url && (
+        <audio controls class="w-full mb-12" src={post.audioFile.asset.url}>
+          Tu navegador no soporta audio HTML5.
+        </audio>
+      )}
+
       <div
         class="text-white/80 leading-relaxed [&>p]:mb-6 [&>h2]:heading [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-12 [&>h2]:mb-4 [&>h3]:heading [&>h3]:font-bold [&>h3]:text-white [&>h3]:mt-10 [&>h3]:mb-3 [&_a]:underline [&_a]:decoration-[#7BAAF7] [&_strong]:text-white [&>ul]:mb-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:mb-6 [&>ol]:list-decimal [&>ol]:pl-6 [&_li]:mb-1.5 [&_blockquote]:border-l-2 [&_blockquote]:pl-5 [&_blockquote]:italic [&_blockquote]:text-white/60"
         style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.15rem' }}
       >
         <PortableText value={post.body} components={{ type: { image: PortableTextImage } }} />
+      </div>
+
+      <div class="flex items-center gap-3 mt-16 pt-8" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <span class="text-sm text-white/40" style={{ fontFamily: 'Inter, sans-serif' }}>Compartir:</span>
+        {shareLinks.map((s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noreferrer noopener"
+            class="text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors duration-200"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+          >
+            {s.label}
+          </a>
+        ))}
       </div>
     </div>
   </article>
