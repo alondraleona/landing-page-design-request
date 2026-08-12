@@ -1,0 +1,119 @@
+---
+const stats = [
+  { value: 20, suffix: '+', label: 'Proyectos entregados', accent: '#2563EB' },
+  { value: 3, suffix: '×', label: 'ROI promedio cliente', accent: '#E5A93C' },
+  { value: 98, suffix: '%', label: 'Satisfacción', accent: '#7BAAF7' },
+  { value: 5, suffix: '+', label: 'Años de experiencia', accent: '#E5A93C' },
+]
+---
+
+<section id="impacto" class="py-28 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16 max-w-2xl">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+        — Nuestro impacto
+      </span>
+      <h2 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+        Resultados que respaldan<br />
+        <span style={{ color: '#2563EB' }}>nuestro trabajo</span>
+      </h2>
+      <p class="text-white/50" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+        Cada proyecto se mide en resultados concretos para nuestros clientes. Estos son los números que nos respaldan hasta hoy.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      {/* Media */}
+      <div data-reveal class="opacity-0 translate-y-6 relative rounded-3xl overflow-hidden min-h-[280px]" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+        <img
+          src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&h=700&fit=crop&auto=format"
+          alt="Equipo de Alo Studio trabajando en un proyecto"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div class="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(15,19,28,0.15) 0%, rgba(15,19,28,0.55) 100%)' }} />
+
+        {/* Play badge — placeholder until the video is wired in */}
+        <button
+          type="button"
+          aria-label="Reproducir video"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full flex items-center justify-center transition-transform duration-200 hover:scale-110"
+          style={{ background: '#2563EB', boxShadow: '0 0 32px rgba(37,99,235,0.55)' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 4l11 6-11 6V4z" fill="white" /></svg>
+        </button>
+      </div>
+
+      {/* Stats + CTA */}
+      <div class="flex flex-col">
+        <div class="grid grid-cols-2 gap-4 flex-1">
+          {stats.map((s) => (
+            <div
+              data-reveal
+              class="opacity-0 translate-y-6 rounded-2xl p-6 flex flex-col justify-center"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              <div class="heading font-extrabold mb-1.5" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', color: s.accent }}>
+                <span data-count-to={s.value}>0</span>{s.suffix}
+              </div>
+              <div class="text-white/50 text-sm leading-tight" style={{ fontFamily: 'Inter, sans-serif' }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <a
+          data-reveal
+          href="#contacto"
+          class="opacity-0 translate-y-6 mt-6 self-start px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-200 hover:scale-105"
+          style={{ background: '#2563EB', boxShadow: '0 0 24px rgba(37,99,235,0.45)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+        >
+          Cotiza tu proyecto →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#impacto')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+    const counters = section.querySelectorAll<HTMLElement>('[data-count-to]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+      counters.forEach((el) => {
+        el.textContent = el.dataset.countTo ?? '0'
+      })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.08,
+        clearProps: 'transform',
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+      })
+
+      counters.forEach((el) => {
+        const target = Number(el.dataset.countTo ?? '0')
+        const proxy = { val: 0 }
+        gsap.to(proxy, {
+          val: target,
+          duration: 1.2,
+          ease: 'power2.out',
+          snap: { val: 1 },
+          onUpdate: () => {
+            el.textContent = String(proxy.val)
+          },
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        })
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>

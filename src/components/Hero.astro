@@ -1,11 +1,3 @@
----
-const stats = [
-  { value: 40, suffix: '+', label: 'Proyectos entregados' },
-  { value: 3, suffix: '×', label: 'ROI promedio cliente' },
-  { value: 98, suffix: '%', label: 'Satisfacción' },
-]
----
-
 <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg pt-24 sm:pt-28 lg:pt-36">
   {/* Ambient blobs */}
   <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)', filter: 'blur(40px)' }} />
@@ -53,16 +45,6 @@ const stats = [
         Ver portafolio
       </a>
     </div>
-
-    {/* Stats */}
-    <div data-reveal class="opacity-0 translate-y-6 mt-20 grid grid-cols-3 gap-6 max-w-xl mx-auto">
-      {stats.map((s) => (
-        <div class="text-center">
-          <div class="heading font-extrabold mb-1" style={{ fontSize: '2rem', color: '#E5A93C' }}><span data-count-to={s.value}>0</span>{s.suffix}</div>
-          <div class="text-white/40 text-xs leading-tight" style={{ fontFamily: 'Inter, sans-serif' }}>{s.label}</div>
-        </div>
-      ))}
-    </div>
   </div>
 
   {/* Scroll hint */}
@@ -78,37 +60,11 @@ const stats = [
   const hero = document.querySelector('#hero')
   if (hero) {
     const revealEls = hero.querySelectorAll<HTMLElement>('[data-reveal]')
-    const counters = hero.querySelectorAll<HTMLElement>('[data-count-to]')
 
     if (prefersReducedMotion()) {
       gsap.set(revealEls, { opacity: 1, y: 0 })
-      counters.forEach((el) => {
-        el.textContent = el.dataset.countTo ?? '0'
-      })
     } else {
-      const tl = gsap.timeline({ delay: 0.15 })
-      tl.to(revealEls, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.12 })
-
-      // Start the count-up only once the stats block has actually faded in —
-      // running it in parallel with the reveal meant the numbers finished
-      // counting while still invisible, so it looked like they never animated.
-      counters.forEach((el, i) => {
-        const target = Number(el.dataset.countTo ?? '0')
-        const proxy = { val: 0 }
-        tl.to(
-          proxy,
-          {
-            val: target,
-            duration: 1.2,
-            ease: 'power2.out',
-            snap: { val: 1 },
-            onUpdate: () => {
-              el.textContent = String(proxy.val)
-            },
-          },
-          i === 0 ? '-=0.1' : '<',
-        )
-      })
+      gsap.to(revealEls, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.12, delay: 0.15 })
     }
   }
 </script>

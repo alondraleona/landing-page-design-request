@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
+import ImpactSection from '../components/ImpactSection.astro'
 import ProjectsCarousel from '../components/ProjectsCarousel'
 import ServicesPostits from '../components/ServicesPostits.astro'
 import BlogPreview from '../components/BlogPreview.astro'
@@ -8,10 +9,11 @@ import BlogPreview from '../components/BlogPreview.astro'
 
 <Layout
   title="Alo Studio | Diseño y Desarrollo Web"
-  description="Agencia digital en Lima, Perú. Diseñamos y desarrollamos sitios web, tiendas online y automatizaciones que convierten. +40 proyectos entregados, 98% de satisfacción."
+  description="Agencia digital en Lima, Perú. Diseñamos y desarrollamos sitios web, tiendas online y automatizaciones que convierten. +20 proyectos entregados, 98% de satisfacción."
   path="/"
 >
   <Hero />
+  <ImpactSection />
   <ProjectsCarousel client:visible />
   <ServicesPostits />
   <BlogPreview />
