@@ -1,0 +1,134 @@
+---
+const phases = ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4']
+
+const teams = [
+  {
+    name: 'Diseño',
+    items: [
+      { label: 'Investigación & Estrategia', col: 1, span: 1, accent: '#7BAAF7' },
+      { label: 'UI / UX Design', col: 1, span: 2, accent: '#2563EB' },
+    ],
+  },
+  {
+    name: 'Desarrollo',
+    items: [
+      { label: 'Maquetación & Contenido', col: 2, span: 1, accent: '#7BAAF7' },
+      { label: 'Desarrollo Front-end', col: 2, span: 2, accent: '#2563EB' },
+    ],
+  },
+  {
+    name: 'Lanzamiento',
+    items: [
+      { label: 'QA & Pruebas', col: 3, span: 2, accent: '#2563EB' },
+      { label: 'Publicación & Soporte', col: 4, span: 1, accent: '#E5A93C' },
+    ],
+  },
+]
+---
+
+<section id="proceso" class="py-28 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16 max-w-2xl">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+        — Nuestro proceso
+      </span>
+      <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+        Así llevamos tu proyecto<br />
+        <span style={{ color: '#2563EB' }}>de la idea al lanzamiento</span>
+      </h1>
+      <p class="text-white/50" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+        Cuatro fases, un mismo equipo acompañándote de principio a fin. Los plazos exactos dependen del alcance de cada proyecto.
+      </p>
+    </div>
+
+    <div data-reveal class="opacity-0 translate-y-6 overflow-x-auto">
+      <div class="relative" style={{ minWidth: '760px' }}>
+        {/* Vertical gridlines */}
+        <div class="absolute inset-y-0 pointer-events-none" style={{ left: '180px', right: 0 }}>
+          {[25, 50, 75].map((pct) => (
+            <div class="absolute inset-y-0 w-px" style={{ left: `${pct}%`, background: 'rgba(255,255,255,0.08)' }} />
+          ))}
+        </div>
+
+        {/* Header row */}
+        <div class="grid pb-4 mb-2" style={{ gridTemplateColumns: '180px repeat(4, 1fr)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div class="text-xs font-semibold uppercase tracking-wider text-white/40" style={{ fontFamily: 'Inter, sans-serif' }}>Equipo</div>
+          {phases.map((p) => (
+            <div class="text-sm font-bold text-center text-white/80" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{p}</div>
+          ))}
+        </div>
+
+        {/* Team rows */}
+        {teams.map((team, ti) => (
+          <div class="flex" style={ti > 0 ? { borderTop: '1px solid rgba(255,255,255,0.07)' } : {}}>
+            <div class="w-[180px] flex-shrink-0 flex items-center py-8">
+              <span class="heading font-bold text-white" style={{ fontSize: '1.05rem' }}>{team.name}</span>
+            </div>
+            <div class="relative flex-1" style={{ minHeight: '136px' }}>
+              {team.items.map((item, ii) => (
+                <div
+                  data-bar
+                  class="absolute rounded-full flex items-center justify-center px-4 text-center opacity-0"
+                  style={{
+                    left: `${((item.col - 1) / 4) * 100}%`,
+                    width: `${(item.span / 4) * 100 - 2}%`,
+                    top: `${ii * 56 + 16}px`,
+                    height: '44px',
+                    background: item.accent,
+                    transformOrigin: 'left center',
+                  }}
+                >
+                  <span class="text-xs font-bold text-white truncate" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#proceso')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+    const bars = section.querySelectorAll<HTMLElement>('[data-bar]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+      gsap.set(bars, { opacity: 1, scaleX: 1 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+      })
+
+      bars.forEach((bar, i) => {
+        gsap.fromTo(
+          bar,
+          { opacity: 0, scaleX: 0 },
+          {
+            opacity: 1,
+            scaleX: 1,
+            duration: 0.7,
+            ease: 'power3.out',
+            delay: (i % 2) * 0.15,
+            scrollTrigger: { trigger: bar, start: 'top 88%', once: true },
+          },
+        )
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>
