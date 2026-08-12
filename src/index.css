@@ -92,6 +92,14 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: #2563EB;

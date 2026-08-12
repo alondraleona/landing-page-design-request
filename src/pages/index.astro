@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
+import ProjectsCarousel from '../components/ProjectsCarousel'
+import ServicesPostits from '../components/ServicesPostits.astro'
+import BlogPreview from '../components/BlogPreview.astro'
 ---
 
 <Layout
@@ -9,4 +12,7 @@ import Hero from '../components/Hero.astro'
   path="/"
 >
   <Hero />
+  <ProjectsCarousel client:visible />
+  <ServicesPostits />
+  <BlogPreview />
 </Layout>

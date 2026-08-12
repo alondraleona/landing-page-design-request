@@ -1,90 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+import { portfolio } from '@/data/portfolio'
 import AnilloVialModal from './modals/AnilloVialModal'
 import EventosModal from './modals/EventosModal'
 import VidanaModal from './modals/VidanaModal'
 import WebProjectModal from './modals/WebProjectModal'
-
-const portfolio = [
-  {
-    title: 'Aventura Motors — Web',
-    tag: 'Diseño y Desarrollo Web',
-    desc: 'Diseño y desarrollo de una plataforma automotriz que organiza la oferta de vehículos y convierte la exploración en una consulta directa.',
-    color: '#E5A93C',
-    img: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop&auto=format',
-    metric: '360°',
-    metricLabel: 'experiencia automotriz',
-    detail: ['Arquitectura UX/UI', 'Catálogo de vehículos', 'Navegación mobile-first', 'Contacto y consultas'],
-    url: 'https://aventuramotors.com.pe',
-    urlLabel: 'Visitar Aventura Motors',
-    caseStudyAventura: true,
-    bar: 86,
-  },
-  {
-    title: 'Anillo Vial',
-    tag: 'Diseño y Desarrollo',
-    desc: 'Transformación de portal estático y burocrático en plataforma ciudadana moderna, accesible e interactiva.',
-    color: '#2563EB',
-    img: 'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=600&h=400&fit=crop&auto=format',
-    metric: '+200%',
-    metricLabel: 'claridad en métricas',
-    detail: ['Diseño y Desarrollo', 'Mobile-first responsive', 'IA reestructurada', '<3 clics acceso clave'],
-    bar: 88,
-    caseStudy: true,
-  },
-  {
-    title: 'Kuyak Perú — Landing Page',
-    tag: 'Diseño y Desarrollo Web',
-    desc: 'Landing B2B para equipos de bombeo e industria que comunica soluciones de alta eficiencia, catálogo y acompañamiento comercial.',
-    color: '#7BAAF7',
-    img: 'https://kuyak.pe/wp-content/uploads/2023/11/image-10.png',
-    metric: 'B2B',
-    metricLabel: 'experiencia industrial',
-    detail: ['Landing corporativa', 'Catálogo de bombeo', 'Soluciones por industria', 'Cotización y postventa'],
-    url: 'https://kuyak.pe',
-    urlLabel: 'Visitar Kuyak Perú',
-    caseStudyKuyak: true,
-    bar: 89,
-  },
-  {
-    title: 'eventos.anillovial.com',
-    tag: 'UX/UI · Producto Web',
-    desc: 'Rediseño de landing de convocatoria ciudadana para Talleres Participativos y Audiencias Públicas del EIA-d.',
-    color: '#E5A93C',
-    img: 'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=600&h=400&fit=crop&auto=format',
-    metric: '+4',
-    metricLabel: 'mejoras críticas UX',
-    detail: ['Arquitectura de información', 'RSVP + WhatsApp/Email', 'Filtro por distritos', 'Acceso digital EIA-d'],
-    bar: 83,
-    caseStudyEventos: true,
-  },
-  {
-    title: 'Workline Partners — Web & Gráfica',
-    tag: 'Diseño Web · Piezas Gráficas',
-    desc: 'Rediseño web y sistema de piezas gráficas para comunicar servicios de staffing con claridad, confianza y respuesta ágil.',
-    color: '#E5A93C',
-    img: 'https://static.wixstatic.com/media/5719bd_6dd82373204144a4afe22ce419eed901~mv2.jpeg/v1/fill/w_1280,h_720,al_c/5719bd_6dd82373204144a4afe22ce419eed901~mv2.jpeg',
-    metric: '360°',
-    metricLabel: 'presencia de marca',
-    detail: ['Rediseño UX/UI', 'Piezas para campañas', 'Comunicación B2B', 'CTAs de contratación'],
-    url: 'https://www.worklinepartners.com/',
-    urlLabel: 'Visitar Workline Partners',
-    caseStudyWorkline: true,
-    bar: 90,
-  },
-  {
-    title: 'VIDANA — Diseño de Marca',
-    tag: 'Branding & Identidad',
-    desc: 'Una identidad vital y cercana para una propuesta saludable, alta en proteína e inclusiva.',
-    color: '#7BAAF7',
-    img: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop&auto=format',
-    metric: '360°',
-    metricLabel: 'identidad adaptable',
-    detail: ['Naming estratégico', 'Logo + sistema visual', 'Packaging y uniformes', 'Manual de identidad'],
-    bar: 91,
-    caseStudyVidana: true,
-  },
-]
 
 type TiltSetters = { rx: (v: number) => void; ry: (v: number) => void; y: (v: number) => void }
 

@@ -1,0 +1,35 @@
+export const services = [
+  {
+    icon: '✦',
+    title: 'UI / UX Design',
+    tagline: 'Interfaces que convierten',
+    desc: 'Diseñamos experiencias centradas en el usuario que reducen la fricción y maximizan la conversión. Desde wireframes hasta prototipos interactivos con Figma.',
+    features: ['Auditoría UX / Heurística', 'Design System completo', 'Prototipo navegable', 'Handoff a desarrollo'],
+    accent: '#2563EB',
+  },
+  {
+    icon: '◈',
+    title: 'E-commerce',
+    tagline: 'Tiendas que venden solas',
+    desc: 'Construimos plataformas de e-commerce de alto rendimiento: Shopify, WooCommerce o custom. Optimizadas para checkout rápido y máxima tasa de conversión.',
+    features: ['Shopify / WooCommerce', 'Pasarela de pagos local', 'SEO técnico incluido', 'Analytics avanzado'],
+    accent: '#E5A93C',
+    featured: true,
+  },
+  {
+    icon: '⬡',
+    title: 'Automatizaciones API',
+    tagline: 'Tu negocio en piloto automático',
+    desc: 'Conectamos tus herramientas, automatizamos procesos repetitivos e integramos IA para que tu equipo enfoque su energía en lo que realmente importa.',
+    features: ['Zapier / Make / n8n', 'Integraciones CRM', 'Bots de atención IA', 'Dashboards en tiempo real'],
+    accent: '#7BAAF7',
+  },
+  {
+    icon: '◎',
+    title: 'Branding & Identidad',
+    tagline: 'Marcas que se recuerdan',
+    desc: 'Construimos identidades visuales sólidas y coherentes: desde el naming y la estrategia de marca hasta el manual completo que tu equipo puede usar de forma autónoma.',
+    features: ['Naming & estrategia de marca', 'Logo + sistema visual', 'Manual de identidad', 'Aplicaciones en piezas reales'],
+    accent: '#E5A93C',
+  },
+]
