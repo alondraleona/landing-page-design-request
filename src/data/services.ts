@@ -32,4 +32,12 @@ export const services = [
     features: ['Naming & estrategia de marca', 'Logo + sistema visual', 'Manual de identidad', 'Aplicaciones en piezas reales'],
     accent: '#E5A93C',
   },
+  {
+    icon: '◐',
+    title: 'Social Media',
+    tagline: 'Contenido que conecta y convierte',
+    desc: 'Gestionamos tus redes con estrategia: calendario editorial, diseño de piezas y reels, y análisis de resultados para construir comunidad y generar demanda real.',
+    features: ['Calendario de contenido', 'Diseño de piezas y reels', 'Community management', 'Reportes de desempeño'],
+    accent: '#2563EB',
+  },
 ]

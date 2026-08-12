@@ -153,6 +153,7 @@ export default function Contact() {
                     <option value="ecomm" style={{ background: '#0F131C' }}>E-commerce</option>
                     <option value="api" style={{ background: '#0F131C' }}>Automatizaciones API</option>
                     <option value="branding" style={{ background: '#0F131C' }}>Branding & Identidad</option>
+                    <option value="social" style={{ background: '#0F131C' }}>Social Media</option>
                     <option value="otro" style={{ background: '#0F131C' }}>Otro</option>
                   </select>
                 </div>
