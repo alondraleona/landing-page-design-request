@@ -2,6 +2,11 @@
 import Layout from '../layouts/Layout.astro'
 import Portfolio from '../components/Portfolio'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
+import { sanityClient } from 'sanity:client'
+import { resolveProject } from '../sanity/lib/projects'
+
+const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
+const projects = rawProjects.map(resolveProject)
 ---
 
 <Layout
@@ -9,6 +14,6 @@ import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
   description="Explora los proyectos de diseño web, e-commerce y branding que hemos entregado para marcas en Perú. Casos reales, resultados medibles."
   path="/portafolio"
 >
-  <Portfolio client:load />
+  <Portfolio client:load projects={projects} />
   <VideoReelsMarquee />
 </Layout>

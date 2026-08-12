@@ -6,6 +6,11 @@ import ProjectsCarousel from '../components/ProjectsCarousel'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
 import ServicesPostits from '../components/ServicesPostits.astro'
 import BlogPreview from '../components/BlogPreview.astro'
+import { sanityClient } from 'sanity:client'
+import { resolveProject } from '../sanity/lib/projects'
+
+const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
+const projects = rawProjects.map(resolveProject)
 ---
 
 <Layout
@@ -15,7 +20,7 @@ import BlogPreview from '../components/BlogPreview.astro'
 >
   <Hero />
   <ImpactSection />
-  <ProjectsCarousel client:visible />
+  <ProjectsCarousel client:visible projects={projects} />
   <VideoReelsMarquee />
   <ServicesPostits />
   <BlogPreview />

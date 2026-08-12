@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
-import { portfolio } from '@/data/portfolio'
+import type { Project } from '@/sanity/lib/projects'
 
-export default function ProjectsCarousel() {
+export default function ProjectsCarousel({ projects }: { projects: Project[] }) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const [canPrev, setCanPrev] = useState(false)
@@ -87,13 +87,13 @@ export default function ProjectsCarousel() {
           className="opacity-0 translate-y-6 flex gap-6 overflow-x-auto pb-4 no-scrollbar"
           style={{ scrollSnapType: 'x mandatory' }}
         >
-          {portfolio.map((p) => (
+          {projects.map((p) => (
             <a
-              key={p.title}
+              key={p._id}
               data-card
-              href={p.url ?? '/portafolio'}
-              target={p.url ? '_blank' : undefined}
-              rel={p.url ? 'noreferrer' : undefined}
+              href={p.externalUrl ?? '/portafolio'}
+              target={p.externalUrl ? '_blank' : undefined}
+              rel={p.externalUrl ? 'noreferrer' : undefined}
               className="group flex-shrink-0 rounded-2xl overflow-hidden"
               style={{
                 width: 'min(80vw, 320px)',
@@ -104,24 +104,24 @@ export default function ProjectsCarousel() {
             >
               <div className="relative h-44 overflow-hidden" style={{ background: '#1a2030' }}>
                 <img
-                  src={p.img}
+                  src={p.coverImageUrl}
                   alt={p.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(15,19,28,0.1) 0%, rgba(15,19,28,0.75) 100%)' }} />
                 <div className="absolute top-3 left-3">
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: p.color, color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: p.accentColor, color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
                     {p.tag}
                   </span>
                 </div>
-                <div className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl text-right" style={{ background: 'rgba(15,19,28,0.82)', backdropFilter: 'blur(8px)', border: `1px solid ${p.color}55` }}>
-                  <div className="heading font-extrabold leading-none" style={{ color: p.color, fontSize: '1.1rem' }}>{p.metric}</div>
+                <div className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl text-right" style={{ background: 'rgba(15,19,28,0.82)', backdropFilter: 'blur(8px)', border: `1px solid ${p.accentColor}55` }}>
+                  <div className="heading font-extrabold leading-none" style={{ color: p.accentColor, fontSize: '1.1rem' }}>{p.metricValue}</div>
                 </div>
               </div>
               <div className="p-5">
                 <h3 className="heading font-bold text-white mb-1.5" style={{ fontSize: '1rem' }}>{p.title}</h3>
-                <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{p.desc}</p>
+                <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{p.description}</p>
               </div>
             </a>
           ))}
