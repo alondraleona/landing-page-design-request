@@ -1,12 +1,10 @@
 ---
-const reels = [
-  { src: '/videos/reels/reel-tv.mp4', poster: '/videos/reels/reel-tv.jpg', alt: 'Spot de TV — cobertura deportiva' },
-  { src: '/videos/reels/reel-suv.mp4', poster: '/videos/reels/reel-suv.jpg', alt: 'Campaña automotriz — SUV en ruta' },
-  { src: '/videos/reels/reel-pickup.mp4', poster: '/videos/reels/reel-pickup.jpg', alt: 'Campaña automotriz — pickup en playa' },
-  { src: '/videos/reels/reel-parriteca.mp4', poster: '/videos/reels/reel-parriteca.jpg', alt: 'La Parriteca — contenido de producto' },
-  { src: '/videos/reels/reel-jeep.mp4', poster: '/videos/reels/reel-jeep.jpg', alt: 'Jeep — campaña de aventura' },
-  { src: '/videos/reels/reel-cortes.mp4', poster: '/videos/reels/reel-cortes.jpg', alt: 'La Parriteca — cortes esenciales' },
-]
+import type { VideoReel } from '@/sanity/lib/videoReels'
+
+interface Props {
+  reels: VideoReel[]
+}
+const { reels } = Astro.props
 
 // Swiper's loop mode needs noticeably more slides than fit on screen at once
 // (with slidesPerView: 'auto' it can't infer that count ahead of time), so

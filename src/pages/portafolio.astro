@@ -4,9 +4,13 @@ import Portfolio from '../components/Portfolio'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
 import { sanityClient } from 'sanity:client'
 import { resolveProject } from '../sanity/lib/projects'
+import { resolveVideoReel } from '../sanity/lib/videoReels'
 
 const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
 const projects = rawProjects.map(resolveProject)
+
+const rawReels = await sanityClient.fetch(`*[_type == "videoReel"] | order(order asc) { title, "videoUrl": video.asset->url, poster }`)
+const reels = rawReels.map(resolveVideoReel)
 ---
 
 <Layout
@@ -15,5 +19,5 @@ const projects = rawProjects.map(resolveProject)
   path="/portafolio"
 >
   <Portfolio client:load projects={projects} />
-  <VideoReelsMarquee />
+  <VideoReelsMarquee reels={reels} />
 </Layout>

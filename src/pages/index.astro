@@ -8,9 +8,13 @@ import ServicesPostits from '../components/ServicesPostits.astro'
 import BlogPreview from '../components/BlogPreview.astro'
 import { sanityClient } from 'sanity:client'
 import { resolveProject } from '../sanity/lib/projects'
+import { resolveVideoReel } from '../sanity/lib/videoReels'
 
 const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
 const projects = rawProjects.map(resolveProject)
+
+const rawReels = await sanityClient.fetch(`*[_type == "videoReel"] | order(order asc) { title, "videoUrl": video.asset->url, poster }`)
+const reels = rawReels.map(resolveVideoReel)
 ---
 
 <Layout
@@ -21,7 +25,7 @@ const projects = rawProjects.map(resolveProject)
   <Hero />
   <ImpactSection />
   <ProjectsCarousel client:visible projects={projects} />
-  <VideoReelsMarquee />
+  <VideoReelsMarquee reels={reels} />
   <ServicesPostits />
   <BlogPreview />
 </Layout>
