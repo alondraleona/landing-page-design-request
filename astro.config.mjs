@@ -11,6 +11,10 @@ const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
   '',
 )
 
+console.log('[debug2] PUBLIC_SANITY_PROJECT_ID len:', (process.env.PUBLIC_SANITY_PROJECT_ID || '').length, JSON.stringify(process.env.PUBLIC_SANITY_PROJECT_ID))
+console.log('[debug2] PUBLIC_SANITY_DATASET len:', (process.env.PUBLIC_SANITY_DATASET || '').length, JSON.stringify(process.env.PUBLIC_SANITY_DATASET))
+console.log('[debug2] VERCEL_ENV:', process.env.VERCEL_ENV, 'VERCEL_GIT_COMMIT_REF:', process.env.VERCEL_GIT_COMMIT_REF)
+
 export default defineConfig({
   site: 'https://alostudio.pe',
   output: 'static',
