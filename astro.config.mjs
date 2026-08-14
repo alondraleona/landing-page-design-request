@@ -5,14 +5,14 @@ import tailwindcss from '@tailwindcss/vite'
 import sanity from '@sanity/astro'
 import sitemap from '@astrojs/sitemap'
 
-const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
+const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET, PUBLIC_EVENTS_HOME } = loadEnv(
   process.env.NODE_ENV ?? 'development',
   process.cwd(),
   '',
 )
 
 export default defineConfig({
-  site: 'https://alostudio.pe',
+  site: PUBLIC_EVENTS_HOME === 'true' ? 'https://eventos.alostudio.pe' : 'https://alostudio.pe',
   output: 'static',
   integrations: [
     react(),

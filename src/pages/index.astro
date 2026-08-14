@@ -6,9 +6,16 @@ import ProjectsCarousel from '../components/ProjectsCarousel'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
 import ServicesPostits from '../components/ServicesPostits.astro'
 import BlogPreview from '../components/BlogPreview.astro'
+import EventsList from '../components/EventsList.astro'
+import EventsTicker from '../components/EventsTicker.astro'
 import { sanityClient } from 'sanity:client'
 import { resolveProject } from '../sanity/lib/projects'
 import { resolveVideoReel } from '../sanity/lib/videoReels'
+
+// The evento-alostudio Vercel project builds this same repo but serves the
+// events page as its root (eventos.alostudio.pe), so a plain rewrite can't
+// win over the static index.html this route also produces for the main site.
+const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 
 const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
 const projects = rawProjects.map(resolveProject)
@@ -17,15 +24,28 @@ const rawReels = await sanityClient.fetch(`*[_type == "videoReel"] | order(order
 const reels = rawReels.map(resolveVideoReel)
 ---
 
-<Layout
-  title="Alo Studio | Diseño y Desarrollo Web"
-  description="Agencia digital en Lima, Perú. Diseñamos y desarrollamos sitios web, tiendas online y automatizaciones que convierten. +20 proyectos entregados, 98% de satisfacción."
-  path="/"
->
-  <Hero />
-  <ImpactSection />
-  <ProjectsCarousel client:visible projects={projects} />
-  <VideoReelsMarquee reels={reels} />
-  <ServicesPostits />
-  <BlogPreview />
-</Layout>
+{isEventsHome ? (
+  <Layout
+    title="Eventos, Capacitaciones y Cursos | Alo Studio"
+    description="Talleres, capacitaciones y cursos de diseño, desarrollo web y automatización con IA. Descubre las próximas ediciones y reserva tu cupo."
+    path="/"
+  >
+    <div class="pt-24 sm:pt-28">
+      <EventsTicker href="#contacto" ariaLabel="Reserva tu cupo en los próximos eventos" />
+    </div>
+    <EventsList />
+  </Layout>
+) : (
+  <Layout
+    title="Alo Studio | Diseño y Desarrollo Web"
+    description="Agencia digital en Lima, Perú. Diseñamos y desarrollamos sitios web, tiendas online y automatizaciones que convierten. +20 proyectos entregados, 98% de satisfacción."
+    path="/"
+  >
+    <Hero />
+    <ImpactSection />
+    <ProjectsCarousel client:visible projects={projects} />
+    <VideoReelsMarquee reels={reels} />
+    <ServicesPostits />
+    <BlogPreview />
+  </Layout>
+)}
