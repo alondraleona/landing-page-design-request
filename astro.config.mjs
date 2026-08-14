@@ -11,6 +11,11 @@ const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
   '',
 )
 
+console.log('[debug] NODE_ENV:', process.env.NODE_ENV)
+console.log('[debug] process.env has PUBLIC_SANITY_PROJECT_ID:', 'PUBLIC_SANITY_PROJECT_ID' in process.env, 'len:', (process.env.PUBLIC_SANITY_PROJECT_ID || '').length)
+console.log('[debug] loadEnv PUBLIC_SANITY_PROJECT_ID len:', (PUBLIC_SANITY_PROJECT_ID || '').length)
+console.log('[debug] process.env has PUBLIC_SANITY_DATASET:', 'PUBLIC_SANITY_DATASET' in process.env, 'len:', (process.env.PUBLIC_SANITY_DATASET || '').length)
+
 export default defineConfig({
   site: 'https://alostudio.pe',
   output: 'static',
