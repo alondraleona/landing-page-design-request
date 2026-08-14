@@ -1,0 +1,138 @@
+---
+import { events } from '@/data/events'
+
+const dateFormatter = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'short' })
+const monthFormatter = new Intl.DateTimeFormat('es-PE', { month: 'short' })
+---
+
+<section id="eventos" class="pt-16 pb-28 px-6 relative grid-bg">
+  <div class="max-w-6xl mx-auto">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16 max-w-2xl">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
+        — Eventos, capacitaciones y cursos
+      </span>
+      <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.6rem)', letterSpacing: '-0.02em' }}>
+        Aprende y conecta<br />
+        <span style={{ color: '#2563EB' }}>con nuestra comunidad</span>
+      </h1>
+      <p class="text-white/50" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+        Talleres, capacitaciones y cursos para llevar tus habilidades digitales al siguiente nivel. Cupos limitados en cada edición.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {events.map((e) => {
+        const d = new Date(`${e.date}T00:00:00`)
+        return (
+          <div
+            data-reveal
+            class:list={['opacity-0 translate-y-6 relative rounded-2xl p-7 flex gap-6', e.featured && 'lg:col-span-2']}
+            style={{
+              background: e.featured
+                ? 'linear-gradient(135deg, rgba(229,169,60,0.12) 0%, rgba(37,99,235,0.08) 100%)'
+                : 'rgba(255,255,255,0.04)',
+              border: e.featured ? '1px solid rgba(229,169,60,0.3)' : '1px solid rgba(255,255,255,0.07)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            {/* Date badge */}
+            <div
+              class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex flex-col items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${e.accent}55` }}
+            >
+              <span class="heading font-extrabold" style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', color: e.accent, lineHeight: 1 }}>
+                {dateFormatter.format(d).split(' ')[0]}
+              </span>
+              <span class="text-[10px] uppercase tracking-widest text-white/50 mt-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+                {monthFormatter.format(d).replace('.', '')}
+              </span>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span
+                  class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide"
+                  style={{ background: `${e.accent}22`, color: e.accent, fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                >
+                  {e.type}
+                </span>
+                {e.featured && (
+                  <span class="text-xs font-bold px-3 py-1 rounded-full" style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                    Próxima edición
+                  </span>
+                )}
+              </div>
+
+              <h2 class="heading font-bold text-white mb-1" style={{ fontSize: '1.25rem', letterSpacing: '-0.01em' }}>
+                {e.title}
+              </h2>
+              <p class="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: e.accent, fontFamily: 'Inter, sans-serif' }}>
+                {e.tagline}
+              </p>
+              <p class="text-white/55 text-sm leading-relaxed mb-5" style={{ fontFamily: 'Inter, sans-serif' }}>
+                {e.desc}
+              </p>
+
+              <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 text-sm text-white/60" style={{ fontFamily: 'Inter, sans-serif' }}>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
+                  {e.modality}
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
+                  {e.duration}
+                </span>
+              </div>
+
+              <a
+                href="#contacto"
+                class="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all duration-200 hover:scale-105"
+                style={{ background: e.accent, color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+              >
+                Reservar mi cupo →
+              </a>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+
+    <div data-reveal class="opacity-0 translate-y-6 mt-16 text-center">
+      <p class="text-white/50 mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+        ¿Buscas una capacitación a la medida de tu equipo?
+      </p>
+      <a
+        href="#contacto"
+        class="inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105 glass"
+        style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+      >
+        Escríbenos →
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#eventos')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>

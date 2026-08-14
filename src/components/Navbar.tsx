@@ -47,6 +47,7 @@ export default function Navbar() {
     { label: 'Servicios', to: '/servicios' },
     { label: 'Proceso', to: '/proceso' },
     { label: 'Portafolio', to: '/portafolio' },
+    { label: 'Eventos', to: '/eventos' },
     { label: 'Blog', to: '/blog' },
     { label: 'Contacto', to: '#contacto' },
   ]
