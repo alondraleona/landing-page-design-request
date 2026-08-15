@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/eventos",
+      "missing": [{ "type": "host", "value": "eventos.alostudio.pe" }],
+      "destination": "https://eventos.alostudio.pe/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/:path*",

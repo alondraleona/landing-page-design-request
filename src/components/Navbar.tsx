@@ -49,7 +49,7 @@ export default function Navbar({ eventsOnly = false }: { eventsOnly?: boolean })
         { label: 'Servicios', to: '/servicios' },
         { label: 'Proceso', to: '/proceso' },
         { label: 'Portafolio', to: '/portafolio' },
-        { label: 'Eventos', to: '/eventos' },
+        { label: 'Eventos', to: 'https://eventos.alostudio.pe' },
         { label: 'Blog', to: '/blog' },
         { label: 'Contacto', to: '#contacto' },
       ]
