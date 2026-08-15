@@ -33,7 +33,7 @@ function AloLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ eventsOnly = false }: { eventsOnly?: boolean }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -43,14 +43,16 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const links = [
-    { label: 'Servicios', to: '/servicios' },
-    { label: 'Proceso', to: '/proceso' },
-    { label: 'Portafolio', to: '/portafolio' },
-    { label: 'Eventos', to: '/eventos' },
-    { label: 'Blog', to: '/blog' },
-    { label: 'Contacto', to: '#contacto' },
-  ]
+  const links = eventsOnly
+    ? [{ label: 'Contacto', to: '#contacto' }]
+    : [
+        { label: 'Servicios', to: '/servicios' },
+        { label: 'Proceso', to: '/proceso' },
+        { label: 'Portafolio', to: '/portafolio' },
+        { label: 'Eventos', to: '/eventos' },
+        { label: 'Blog', to: '/blog' },
+        { label: 'Contacto', to: '#contacto' },
+      ]
 
   return (
     <nav

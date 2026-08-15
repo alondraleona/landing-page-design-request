@@ -12,6 +12,7 @@ interface Props {
 const { title, description, path } = Astro.props
 const canonicalUrl = new URL(path, Astro.site)
 const ogImageUrl = new URL('/favicon/webclip-512x512.png', Astro.site)
+const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 ---
 
 <!doctype html>
@@ -79,7 +80,7 @@ const ogImageUrl = new URL('/favicon/webclip-512x512.png', Astro.site)
     >
     <!-- End Google Tag Manager (noscript) -->
 
-    <Navbar client:load />
+    <Navbar client:load eventsOnly={isEventsHome} />
     <slot />
     <Contact client:visible />
     <Footer />
