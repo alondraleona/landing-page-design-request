@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { projectId, publicAnonKey } from '@/lib/supabase-info'
 
 // Free client-side call to Google's public PageSpeed Insights API (runs Lighthouse
 // on Google's infrastructure, not ours — zero load on our own hosting).
@@ -7,6 +8,8 @@ import { useState, type FormEvent } from 'react'
 // to get a key from https://developers.google.com/speed/docs/insights/v5/get-started
 const API_KEY = import.meta.env.PUBLIC_PAGESPEED_API_KEY as string | undefined
 const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo']
+const SERVER_URL = `https://${projectId}.supabase.co/functions/v1/server/make-server-150c1629`
+const LEAD_STORAGE_KEY = 'speedcheck_lead_email'
 
 type Scores = Record<string, number | null>
 
@@ -72,6 +75,12 @@ export default function SpeedCheck() {
   const [error, setError] = useState('')
   const [scores, setScores] = useState<Scores | null>(null)
   const [vitals, setVitals] = useState<{ fcp?: string; lcp?: string; cls?: string } | null>(null)
+  const [analyzedUrl, setAnalyzedUrl] = useState('')
+  const [unlocked, setUnlocked] = useState(false)
+
+  useEffect(() => {
+    if (localStorage.getItem(LEAD_STORAGE_KEY)) setUnlocked(true)
+  }, [])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -82,6 +91,7 @@ export default function SpeedCheck() {
     setError('')
     setScores(null)
     setVitals(null)
+    setAnalyzedUrl(target)
 
     try {
       const params = new URLSearchParams({ url: target, strategy })
@@ -182,41 +192,130 @@ export default function SpeedCheck() {
         )}
 
         {scores && (
-          <div className="rounded-2xl p-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)' }}>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
-              {CATEGORIES.map((c) => (
-                <ScoreCircle key={c} label={LABELS[c]} score={scores[c]} />
-              ))}
-            </div>
-
-            {vitals && (vitals.fcp || vitals.lcp || vitals.cls) && (
-              <div className="grid grid-cols-3 gap-4 pt-6 mb-8" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                {[
-                  { label: 'FCP', value: vitals.fcp },
-                  { label: 'LCP', value: vitals.lcp },
-                  { label: 'CLS', value: vitals.cls },
-                ].map((v) => (
-                  <div key={v.label}>
-                    <div className="text-xs text-white/35 uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>{v.label}</div>
-                    <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{v.value || '–'}</div>
-                  </div>
+          <div className="relative rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)' }}>
+            <div
+              className="p-8"
+              style={{
+                filter: unlocked ? 'none' : 'blur(14px)',
+                userSelect: unlocked ? 'auto' : 'none',
+                pointerEvents: unlocked ? 'auto' : 'none',
+                transition: 'filter 0.4s ease-out',
+              }}
+              aria-hidden={!unlocked}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
+                {CATEGORIES.map((c) => (
+                  <ScoreCircle key={c} label={LABELS[c]} score={scores[c]} />
                 ))}
               </div>
-            )}
 
-            <p className="text-white/50 text-sm mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
-              ¿Quieres mejorar estos números? Te ayudamos a optimizarlos.
-            </p>
-            <a
-              href="#contacto"
-              className="inline-block px-7 py-3 rounded-xl font-bold text-white text-sm transition-all duration-200 hover:scale-105"
-              style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-            >
-              Cotiza tu optimización →
-            </a>
+              {vitals && (vitals.fcp || vitals.lcp || vitals.cls) && (
+                <div className="grid grid-cols-3 gap-4 pt-6 mb-8" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  {[
+                    { label: 'FCP', value: vitals.fcp },
+                    { label: 'LCP', value: vitals.lcp },
+                    { label: 'CLS', value: vitals.cls },
+                  ].map((v) => (
+                    <div key={v.label}>
+                      <div className="text-xs text-white/35 uppercase tracking-wider mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>{v.label}</div>
+                      <div className="text-sm font-semibold text-white" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>{v.value || '–'}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <p className="text-white/50 text-sm mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+                ¿Quieres mejorar estos números? Te ayudamos a optimizarlos.
+              </p>
+              <a
+                href="#contacto"
+                className="inline-block px-7 py-3 rounded-xl font-bold text-white text-sm transition-all duration-200 hover:scale-105"
+                style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+              >
+                Cotiza tu optimización →
+              </a>
+            </div>
+
+            {!unlocked && (
+              <div className="absolute inset-0 flex items-center justify-center p-6" style={{ background: 'rgba(15,19,28,0.72)' }}>
+                <EmailGate url={analyzedUrl} scores={scores} onUnlock={() => setUnlocked(true)} />
+              </div>
+            )}
           </div>
         )}
       </div>
     </section>
+  )
+}
+
+function EmailGate({ url, scores, onUnlock }: { url: string; scores: Scores; onUnlock: () => void }) {
+  const [email, setEmail] = useState('')
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    if (sending) return
+    setSending(true)
+    setError('')
+
+    try {
+      const res = await fetch(`${SERVER_URL}/lead`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${publicAnonKey}`,
+        },
+        body: JSON.stringify({ email, url, scores, source: 'diagnostico' }),
+      })
+      if (!res.ok) throw new Error('No pudimos guardar tu email')
+
+      localStorage.setItem('speedcheck_lead_email', email)
+      onUnlock()
+    } catch {
+      setError('No pudimos guardar tu email. Intenta de nuevo.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <div className="w-full max-w-sm text-center">
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(229,169,60,0.15)', border: '1px solid rgba(229,169,60,0.3)' }}>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="3" y="8" width="14" height="9" rx="2" stroke="#E5A93C" strokeWidth="1.6" />
+          <path d="M6 8V6a4 4 0 0 1 8 0v2" stroke="#E5A93C" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </div>
+      <h3 className="heading font-bold text-white text-lg mb-2">Ingresa tu email para ver tu puntuación completa</h3>
+      <p className="text-white/50 text-sm mb-5" style={{ fontFamily: 'Inter, sans-serif' }}>
+        Ya analizamos tu web. Déjanos tu correo y desbloquea el resultado al instante.
+      </p>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <input
+          required
+          type="email"
+          placeholder="tu@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl text-white text-sm text-center"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', fontFamily: 'Inter, sans-serif' }}
+        />
+        <button
+          type="submit"
+          disabled={sending}
+          className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all duration-200 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+          style={{ background: '#2563EB', boxShadow: '0 0 24px rgba(37,99,235,0.4)', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+        >
+          {sending ? 'Desbloqueando...' : 'Ver mi puntuación →'}
+        </button>
+      </form>
+      {error && (
+        <p className="text-red-400 text-xs mt-3" style={{ fontFamily: 'Inter, sans-serif' }}>{error}</p>
+      )}
+      <p className="text-white/30 text-xs mt-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+        No hacemos spam. Ver <a href="/politicas#privacidad" className="underline hover:text-white/50">política de privacidad</a>.
+      </p>
+    </div>
   )
 }

@@ -15,13 +15,7 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#39;");
 }
 
-async function sendContactNotification(data: {
-  name: string;
-  email: string;
-  company?: string;
-  service?: string;
-  message: string;
-}) {
+async function sendResendEmail(subject: string, replyTo: string, html: string) {
   const apiKey = Deno.env.get("RESEND_API_KEY");
   if (!apiKey) {
     console.log("RESEND_API_KEY not set, skipping email notification");
@@ -38,16 +32,9 @@ async function sendContactNotification(data: {
       body: JSON.stringify({
         from: "Alo Studio <notificaciones@alostudio.pe>",
         to: [NOTIFY_EMAIL],
-        reply_to: data.email,
-        subject: `Nuevo mensaje de contacto — ${data.name}`,
-        html: `
-          <p><strong>Nombre:</strong> ${escapeHtml(data.name)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
-          <p><strong>Empresa:</strong> ${escapeHtml(data.company || "—")}</p>
-          <p><strong>Servicio de interés:</strong> ${escapeHtml(data.service || "—")}</p>
-          <p><strong>Mensaje:</strong></p>
-          <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
-        `,
+        reply_to: replyTo,
+        subject,
+        html,
       }),
     });
 
@@ -55,8 +42,45 @@ async function sendContactNotification(data: {
       console.log("Resend error:", res.status, await res.text());
     }
   } catch (err) {
-    console.log("Failed to send contact notification email:", err);
+    console.log("Failed to send email notification:", err);
   }
+}
+
+async function sendContactNotification(data: {
+  name: string;
+  email: string;
+  company?: string;
+  service?: string;
+  message: string;
+}) {
+  await sendResendEmail(
+    `Nuevo mensaje de contacto — ${data.name}`,
+    data.email,
+    `
+      <p><strong>Nombre:</strong> ${escapeHtml(data.name)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+      <p><strong>Empresa:</strong> ${escapeHtml(data.company || "—")}</p>
+      <p><strong>Servicio de interés:</strong> ${escapeHtml(data.service || "—")}</p>
+      <p><strong>Mensaje:</strong></p>
+      <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
+    `,
+  );
+}
+
+async function sendLeadNotification(data: {
+  email: string;
+  url?: string;
+  source?: string;
+}) {
+  await sendResendEmail(
+    `Nuevo lead del diagnóstico — ${data.email}`,
+    data.email,
+    `
+      <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+      <p><strong>Web analizada:</strong> ${escapeHtml(data.url || "—")}</p>
+      <p><strong>Origen:</strong> ${escapeHtml(data.source || "—")}</p>
+    `,
+  );
 }
 
 // Enable logger
@@ -99,6 +123,29 @@ app.post("/server/make-server-150c1629/contacto", async (c) => {
   });
 
   await sendContactNotification({ name, email, company, service, message });
+
+  return c.json({ success: true });
+});
+
+// Receives leads captured before revealing the free diagnostic (SpeedCheck) results
+app.post("/server/make-server-150c1629/lead", async (c) => {
+  const body = await c.req.json();
+  const { email, url, scores, source } = body;
+
+  if (!email) {
+    return c.json({ error: "Falta el email" }, 400);
+  }
+
+  const key = `lead:${Date.now()}:${crypto.randomUUID()}`;
+  await kv.set(key, {
+    email,
+    url: url ?? "",
+    scores: scores ?? {},
+    source: source ?? "",
+    receivedAt: new Date().toISOString(),
+  });
+
+  await sendLeadNotification({ email, url, source });
 
   return c.json({ success: true });
 });
