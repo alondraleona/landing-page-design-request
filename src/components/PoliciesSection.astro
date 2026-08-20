@@ -1,0 +1,113 @@
+---
+import { policies } from '../data/policies'
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('es-PE', { year: 'numeric', month: 'long', day: 'numeric' })
+---
+
+<section class="relative py-28 px-6 grid-bg">
+  <div class="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.08) 0%, transparent 60%)' }} />
+
+  <div class="max-w-6xl mx-auto relative z-10">
+    <span class="text-xs font-semibold tracking-widest uppercase mb-4 block gold-text" style={{ fontFamily: 'Inter, sans-serif' }}>
+      — Legal
+    </span>
+    <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}>
+      Políticas del sitio
+    </h1>
+    <p class="text-white/50 leading-relaxed mb-14 max-w-2xl" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+      Aquí encuentras el aviso legal, la política de privacidad, los términos y condiciones y la política de cookies de Alo Studio.
+    </p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-10 items-start">
+      <!-- Sticky side nav -->
+      <nav class="lg:sticky lg:top-28 flex lg:flex-col gap-2 overflow-x-auto no-scrollbar pb-2 lg:pb-0" aria-label="Secciones de políticas">
+        {policies.map((section) => (
+          <a
+            href={`#${section.id}`}
+            data-policy-nav={section.id}
+            class="policy-nav-link whitespace-nowrap px-4 py-2.5 rounded-xl text-sm font-semibold text-white/60 transition-colors duration-200"
+            style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+          >
+            {section.navLabel}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Content -->
+      <div class="space-y-6">
+        {policies.map((section) => (
+          <article id={section.id} class="glass rounded-2xl p-8 scroll-mt-28">
+            <div class="mb-6">
+              <h2 class="heading font-extrabold text-white text-2xl mb-2">{section.title}</h2>
+              <p class="text-xs text-white/35 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif' }}>
+                Última actualización: {formatDate(section.updated)}
+              </p>
+            </div>
+
+            {section.intro && (
+              <p class="text-white/60 leading-relaxed mb-6" style={{ fontFamily: 'Inter, sans-serif' }}>
+                {section.intro}
+              </p>
+            )}
+
+            <div class="space-y-6">
+              {section.subsections.map((sub) => (
+                <div>
+                  <h3 class="heading font-bold text-white text-base mb-2.5">{sub.heading}</h3>
+                  {sub.blocks.map((block) =>
+                    block.type === 'p' ? (
+                      <p class="text-white/50 leading-relaxed text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+                        {block.text}
+                      </p>
+                    ) : (
+                      <ul class="space-y-2 mt-1">
+                        {block.items.map((item) => (
+                          <li class="flex items-start gap-3 text-white/50 leading-relaxed text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+                            <span class="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#E5A93C' }} />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ),
+                  )}
+                </div>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .policy-nav-link.is-active {
+    color: white;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+  }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('.policy-nav-link')
+  const sections = document.querySelectorAll<HTMLElement>('article[id]')
+
+  const setActive = (id: string) => {
+    links.forEach((link) => {
+      link.classList.toggle('is-active', link.dataset.policyNav === id)
+    })
+  }
+
+  if (sections.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((entry) => entry.isIntersecting)
+        if (visible) setActive(visible.target.id)
+      },
+      { rootMargin: '-30% 0px -60% 0px' },
+    )
+    sections.forEach((section) => observer.observe(section))
+    setActive(sections[0].id)
+  }
+</script>
