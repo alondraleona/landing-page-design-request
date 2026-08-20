@@ -47,7 +47,6 @@ export default function Navbar({ eventsOnly = false }: { eventsOnly?: boolean })
     ? [{ label: 'Contacto', to: '#contacto' }]
     : [
         { label: 'Servicios', to: '/servicios' },
-        { label: 'Proceso', to: '/proceso' },
         { label: 'Portafolio', to: '/portafolio' },
         { label: 'Eventos', to: 'https://eventos.alostudio.pe' },
         { label: 'Blog', to: '/blog' },
@@ -99,7 +98,12 @@ export default function Navbar({ eventsOnly = false }: { eventsOnly?: boolean })
         </div>
 
         {/* Mobile hamburger */}
-        <button className="md:hidden text-white/70 hover:text-white" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="md:hidden text-white/70 hover:text-white"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={menuOpen}
+        >
           <svg width="22" height="22" fill="none" viewBox="0 0 22 22">
             {menuOpen
               ? <><path d="M4 4l14 14M18 4L4 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></>

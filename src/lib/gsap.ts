@@ -1,10 +1,7 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { prefersReducedMotion } from './motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export function prefersReducedMotion() {
-  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-export { gsap, ScrollTrigger }
+export { gsap, ScrollTrigger, prefersReducedMotion }

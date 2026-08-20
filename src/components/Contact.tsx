@@ -141,8 +141,9 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-white/50 mb-1.5 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif' }}>Servicio de interés</label>
+                  <label htmlFor="service" className="block text-xs font-semibold text-white/50 mb-1.5 uppercase tracking-wider" style={{ fontFamily: 'Inter, sans-serif' }}>Servicio de interés</label>
                   <select
+                    id="service"
                     className={inputClass}
                     style={{ ...inputStyle, appearance: 'none' }}
                     value={form.service}

@@ -3,6 +3,7 @@ import '../index.css'
 import Navbar from '../components/Navbar'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer.astro'
+import CookieConsent from '../components/CookieConsent'
 
 interface Props {
   title: string
@@ -20,6 +21,13 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    />
 
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-de-32x32.png" />
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon/favicon-de-48x48.png" />
@@ -43,6 +51,21 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 
     <meta name="google-site-verification" content="05-Qe9nbFHZC0gZ8mFEE-zTM3178xbitFdWKlec22GI" />
 
+    <!-- Google Consent Mode v2: default state (denied) must be set before GTM/gtag load -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500,
+      })
+    </script>
+
     <!-- Google Tag Manager -->
     <script is:inline>
       ;(function (w, d, s, l, i) {
@@ -61,10 +84,6 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
     <!-- Google Analytics (gtag.js) -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-KFF4J6MGKH"></script>
     <script is:inline>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
       gtag('js', new Date())
       gtag('config', 'G-KFF4J6MGKH')
     </script>
@@ -81,8 +100,11 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
     <!-- End Google Tag Manager (noscript) -->
 
     <Navbar client:load eventsOnly={isEventsHome} />
-    <slot />
-    <Contact client:visible />
+    <main>
+      <slot />
+      <Contact client:visible />
+    </main>
     <Footer />
+    <CookieConsent client:load />
   </body>
 </html>

@@ -4,6 +4,7 @@ const phases = ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4']
 const teams = [
   {
     name: 'Diseño',
+    desc: 'Empezamos por entender tu negocio, tu mercado y a las personas que quieres convertir en clientes. Esa investigación se traduce en una estrategia y un diseño UI/UX pensado para guiar al usuario hacia la acción, no solo para verse bien.',
     items: [
       { label: 'Investigación & Estrategia', col: 1, span: 1, accent: '#7BAAF7' },
       { label: 'UI / UX Design', col: 1, span: 2, accent: '#2563EB' },
@@ -11,6 +12,7 @@ const teams = [
   },
   {
     name: 'Desarrollo',
+    desc: 'Con el diseño validado, lo convertimos en código real: maquetamos cada sección, cargamos el contenido definitivo y construimos el front-end priorizando velocidad, accesibilidad y una base sólida para crecer.',
     items: [
       { label: 'Maquetación & Contenido', col: 2, span: 1, accent: '#7BAAF7' },
       { label: 'Desarrollo Front-end', col: 2, span: 2, accent: '#2563EB' },
@@ -18,6 +20,7 @@ const teams = [
   },
   {
     name: 'Lanzamiento',
+    desc: 'Antes de publicar, probamos cada flujo en distintos dispositivos y navegadores para que no queden cabos sueltos. Después del lanzamiento seguimos cerca, dando soporte y ajustando lo que haga falta.',
     items: [
       { label: 'QA & Pruebas', col: 3, span: 2, accent: '#2563EB' },
       { label: 'Publicación & Soporte', col: 4, span: 1, accent: '#E5A93C' },
@@ -32,12 +35,12 @@ const teams = [
       <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#E5A93C', fontFamily: 'Inter, sans-serif' }}>
         — Nuestro proceso
       </span>
-      <h1 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+      <h2 class="heading font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
         Así llevamos tu proyecto<br />
         <span style={{ color: '#2563EB' }}>de la idea al lanzamiento</span>
-      </h1>
+      </h2>
       <p class="text-white/50" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
-        Cuatro fases, un mismo equipo acompañándote de principio a fin. Los plazos exactos dependen del alcance de cada proyecto.
+        Cuatro fases, un mismo equipo acompañándote de principio a fin. Nada de cajas negras: en cada etapa sabes qué se está haciendo, qué sigue y por qué. Los plazos exactos dependen del alcance de cada proyecto.
       </p>
     </div>
 
@@ -88,47 +91,66 @@ const teams = [
         ))}
       </div>
     </div>
+
+    <div data-reveal class="opacity-0 translate-y-6 mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+      {teams.map((team) => (
+        <div>
+          <h3 class="heading font-bold text-white mb-2" style={{ fontSize: '1.1rem' }}>{team.name}</h3>
+          <p class="text-white/55 text-sm leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{team.desc}</p>
+        </div>
+      ))}
+    </div>
   </div>
 </section>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+  // Deferred: this section is below the fold, so GSAP (46 KiB) doesn't need
+  // to compete with the initial page load's critical resources.
+  const init = async () => {
+    const { gsap, ScrollTrigger, prefersReducedMotion } = await import('@/lib/gsap')
 
-  const section = document.querySelector('#proceso')
-  if (section) {
-    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
-    const bars = section.querySelectorAll<HTMLElement>('[data-bar]')
+    const section = document.querySelector('#proceso')
+    if (section) {
+      const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+      const bars = section.querySelectorAll<HTMLElement>('[data-bar]')
 
-    if (prefersReducedMotion()) {
-      gsap.set(revealEls, { opacity: 1, y: 0 })
-      gsap.set(bars, { opacity: 1, scaleX: 1 })
-    } else {
-      gsap.to(revealEls, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.1,
-        clearProps: 'transform',
-        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
-      })
+      if (prefersReducedMotion()) {
+        gsap.set(revealEls, { opacity: 1, y: 0 })
+        gsap.set(bars, { opacity: 1, scaleX: 1 })
+      } else {
+        gsap.to(revealEls, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.1,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        })
 
-      bars.forEach((bar, i) => {
-        gsap.fromTo(
-          bar,
-          { opacity: 0, scaleX: 0 },
-          {
-            opacity: 1,
-            scaleX: 1,
-            duration: 0.7,
-            ease: 'power3.out',
-            delay: (i % 2) * 0.15,
-            scrollTrigger: { trigger: bar, start: 'top 88%', once: true },
-          },
-        )
-      })
+        bars.forEach((bar, i) => {
+          gsap.fromTo(
+            bar,
+            { opacity: 0, scaleX: 0 },
+            {
+              opacity: 1,
+              scaleX: 1,
+              duration: 0.7,
+              ease: 'power3.out',
+              delay: (i % 2) * 0.15,
+              scrollTrigger: { trigger: bar, start: 'top 88%', once: true },
+            },
+          )
+        })
 
-      window.addEventListener('load', () => ScrollTrigger.refresh())
+        window.addEventListener('load', () => ScrollTrigger.refresh())
+      }
     }
+  }
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(init)
+  } else {
+    setTimeout(init, 200)
   }
 </script>

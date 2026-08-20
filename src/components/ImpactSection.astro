@@ -27,6 +27,12 @@ const stats = [
       <div data-reveal class="opacity-0 translate-y-6 relative rounded-3xl overflow-hidden min-h-[280px]" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
         <img
           src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&h=700&fit=crop&auto=format"
+          srcset="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=480&h=373&fit=crop&auto=format 480w,
+                  https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=545&fit=crop&auto=format 700w,
+                  https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&h=700&fit=crop&auto=format 900w,
+                  https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1100&h=856&fit=crop&auto=format 1100w,
+                  https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1300&h=1010&fit=crop&auto=format 1300w"
+          sizes="(min-width: 1024px) 50vw, 100vw"
           alt="Equipo de Alo Studio trabajando en un proyecto"
           class="absolute inset-0 w-full h-full object-cover"
           loading="lazy"

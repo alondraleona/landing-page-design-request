@@ -5,23 +5,35 @@ import ImpactSection from '../components/ImpactSection.astro'
 import ProjectsCarousel from '../components/ProjectsCarousel'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
 import ServicesPostits from '../components/ServicesPostits.astro'
+import SpeedCheck from '../components/SpeedCheck'
 import BlogPreview from '../components/BlogPreview.astro'
 import EventsList from '../components/EventsList.astro'
 import EventsTicker from '../components/EventsTicker.astro'
 import { sanityClient } from 'sanity:client'
 import { resolveProject } from '../sanity/lib/projects'
 import { resolveVideoReel } from '../sanity/lib/videoReels'
+import { resolveEvent } from '../sanity/lib/events'
 
 // The evento-alostudio Vercel project builds this same repo but serves the
 // events page as its root (eventos.alostudio.pe), so a plain rewrite can't
 // win over the static index.html this route also produces for the main site.
 const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 
-const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
-const projects = rawProjects.map(resolveProject)
+let projects: ReturnType<typeof resolveProject>[] = []
+let reels: ReturnType<typeof resolveVideoReel>[] = []
+let events: ReturnType<typeof resolveEvent>[] = []
 
-const rawReels = await sanityClient.fetch(`*[_type == "videoReel"] | order(order asc) { title, "videoUrl": video.asset->url, poster }`)
-const reels = rawReels.map(resolveVideoReel)
+if (isEventsHome) {
+  const today = new Date().toISOString().slice(0, 10)
+  const rawEvents = await sanityClient.fetch(`*[_type == "event" && date >= $today] | order(date asc)`, { today })
+  events = rawEvents.map(resolveEvent)
+} else {
+  const rawProjects = await sanityClient.fetch(`*[_type == "project"] | order(order asc)`)
+  projects = rawProjects.map(resolveProject)
+
+  const rawReels = await sanityClient.fetch(`*[_type == "videoReel"] | order(order asc) { title, "videoUrl": video.asset->url, poster }`)
+  reels = rawReels.map(resolveVideoReel)
+}
 ---
 
 {isEventsHome ? (
@@ -33,7 +45,7 @@ const reels = rawReels.map(resolveVideoReel)
     <div class="pt-24 sm:pt-28">
       <EventsTicker href="#contacto" ariaLabel="Reserva tu cupo en los próximos eventos" />
     </div>
-    <EventsList />
+    <EventsList events={events} />
   </Layout>
 ) : (
   <Layout
@@ -46,6 +58,7 @@ const reels = rawReels.map(resolveVideoReel)
     <ProjectsCarousel client:visible projects={projects} />
     <VideoReelsMarquee reels={reels} />
     <ServicesPostits />
+    <SpeedCheck client:visible />
     <BlogPreview />
   </Layout>
 )}

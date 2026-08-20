@@ -1,6 +1,6 @@
 import { loadEnv } from 'vite'
 import { fileURLToPath } from 'node:url'
-import { rm } from 'node:fs/promises'
+import { rm, writeFile } from 'node:fs/promises'
 import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
@@ -26,10 +26,28 @@ function pruneNonEventsRoutes() {
         if (!isEventsHome) return
         const outDir = fileURLToPath(dir)
         await Promise.all(
-          ['servicios', 'portafolio', 'proceso', 'blog'].map((route) =>
+          ['servicios', 'portafolio', 'blog'].map((route) =>
             rm(`${outDir}/${route}`, { recursive: true, force: true }),
           ),
         )
+      },
+    },
+  }
+}
+
+// Cloudflare Pages equivalent of the old vercel.json host-based rewrite/redirect:
+// the eventos build rewrites every path to the events page, the main build
+// redirects /eventos out to the canonical eventos.alostudio.pe domain.
+function writeCloudflareRedirects() {
+  return {
+    name: 'write-cloudflare-redirects',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        const outDir = fileURLToPath(dir)
+        const redirects = isEventsHome
+          ? '/*  /eventos  200\n'
+          : '/eventos  https://eventos.alostudio.pe/  301\n'
+        await writeFile(`${outDir}/_redirects`, redirects)
       },
     },
   }
@@ -42,6 +60,7 @@ export default defineConfig({
     react(),
     sitemap(),
     pruneNonEventsRoutes(),
+    writeCloudflareRedirects(),
     sanity({
       projectId: PUBLIC_SANITY_PROJECT_ID,
       dataset: PUBLIC_SANITY_DATASET,
@@ -52,6 +71,12 @@ export default defineConfig({
       // alostudio.pe only reads published content, no admin route exists here.
     }),
   ],
+  build: {
+    // Inline all page CSS instead of emitting render-blocking <link> tags —
+    // PageSpeed flagged Layout.css and VideoReelsMarquee.css as blocking the
+    // first paint on mobile.
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()],
   },

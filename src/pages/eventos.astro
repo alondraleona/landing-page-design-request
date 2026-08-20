@@ -2,6 +2,12 @@
 import Layout from '../layouts/Layout.astro'
 import EventsList from '../components/EventsList.astro'
 import EventsTicker from '../components/EventsTicker.astro'
+import { sanityClient } from 'sanity:client'
+import { resolveEvent } from '../sanity/lib/events'
+
+const today = new Date().toISOString().slice(0, 10)
+const rawEvents = await sanityClient.fetch(`*[_type == "event" && date >= $today] | order(date asc)`, { today })
+const events = rawEvents.map(resolveEvent)
 ---
 
 <Layout
@@ -12,5 +18,5 @@ import EventsTicker from '../components/EventsTicker.astro'
   <div class="pt-24 sm:pt-28">
     <EventsTicker href="#contacto" ariaLabel="Reserva tu cupo en los próximos eventos" />
   </div>
-  <EventsList />
+  <EventsList events={events} />
 </Layout>

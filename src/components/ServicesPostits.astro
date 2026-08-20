@@ -75,56 +75,66 @@ const rotations = [-4, 3, -3, 4, -2]
 </section>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+  // Deferred: this section is below the fold, so GSAP (46 KiB) doesn't need
+  // to compete with the initial page load's critical resources.
+  const init = async () => {
+    const { gsap, ScrollTrigger, prefersReducedMotion } = await import('@/lib/gsap')
 
-  const section = document.querySelector('#servicios')
-  if (section) {
-    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
-    const postits = section.querySelectorAll<HTMLElement>('[data-postit]')
+    const section = document.querySelector('#servicios')
+    if (section) {
+      const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+      const postits = section.querySelectorAll<HTMLElement>('[data-postit]')
 
-    if (prefersReducedMotion()) {
-      gsap.set(revealEls, { opacity: 1, y: 0 })
-      postits.forEach((el) => {
-        const rotation = Number(el.dataset.rotation ?? '0')
-        gsap.set(el, { opacity: 1, rotation })
-      })
-    } else {
-      gsap.to(revealEls, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.1,
-        clearProps: 'transform',
-        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
-      })
-
-      postits.forEach((el, i) => {
-        const rotation = Number(el.dataset.rotation ?? '0')
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 40, scale: 0.85, rotation: rotation * 2.5 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotation,
-            duration: 0.65,
-            ease: 'back.out(1.6)',
-            delay: i * 0.1,
-            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-          },
-        )
-
-        el.addEventListener('mouseenter', () => {
-          gsap.to(el, { rotation: 0, scale: 1.04, duration: 0.3, ease: 'power2.out' })
+      if (prefersReducedMotion()) {
+        gsap.set(revealEls, { opacity: 1, y: 0 })
+        postits.forEach((el) => {
+          const rotation = Number(el.dataset.rotation ?? '0')
+          gsap.set(el, { opacity: 1, rotation })
         })
-        el.addEventListener('mouseleave', () => {
-          gsap.to(el, { rotation, scale: 1, duration: 0.3, ease: 'power2.out' })
+      } else {
+        gsap.to(revealEls, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.1,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
         })
-      })
 
-      window.addEventListener('load', () => ScrollTrigger.refresh())
+        postits.forEach((el, i) => {
+          const rotation = Number(el.dataset.rotation ?? '0')
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 40, scale: 0.85, rotation: rotation * 2.5 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotation,
+              duration: 0.65,
+              ease: 'back.out(1.6)',
+              delay: i * 0.1,
+              scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+            },
+          )
+
+          el.addEventListener('mouseenter', () => {
+            gsap.to(el, { rotation: 0, scale: 1.04, duration: 0.3, ease: 'power2.out' })
+          })
+          el.addEventListener('mouseleave', () => {
+            gsap.to(el, { rotation, scale: 1, duration: 0.3, ease: 'power2.out' })
+          })
+        })
+
+        window.addEventListener('load', () => ScrollTrigger.refresh())
+      }
     }
+  }
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(init)
+  } else {
+    setTimeout(init, 200)
   }
 </script>

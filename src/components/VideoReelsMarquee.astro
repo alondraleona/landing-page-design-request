@@ -66,7 +66,7 @@ const slides = [...reels, ...reels, ...reels]
   import Swiper from 'swiper'
   import { FreeMode, Autoplay } from 'swiper/modules'
   import 'swiper/css'
-  import { prefersReducedMotion } from '@/lib/gsap'
+  import { prefersReducedMotion } from '@/lib/motion'
 
   document.querySelectorAll<HTMLElement>('#reels .reels-swiper').forEach((el) => {
     const reduced = prefersReducedMotion()
@@ -107,26 +107,36 @@ const slides = [...reels, ...reels, ...reels]
 </script>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+  // Deferred: this section is below the fold, so GSAP (46 KiB) doesn't need
+  // to compete with the initial page load's critical resources.
+  const init = async () => {
+    const { gsap, ScrollTrigger, prefersReducedMotion } = await import('@/lib/gsap')
 
-  const section = document.querySelector('#reels')
-  if (section) {
-    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+    const section = document.querySelector('#reels')
+    if (section) {
+      const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
 
-    if (prefersReducedMotion()) {
-      gsap.set(revealEls, { opacity: 1, y: 0 })
-    } else {
-      gsap.to(revealEls, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        stagger: 0.1,
-        clearProps: 'transform',
-        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
-      })
+      if (prefersReducedMotion()) {
+        gsap.set(revealEls, { opacity: 1, y: 0 })
+      } else {
+        gsap.to(revealEls, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.1,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        })
 
-      window.addEventListener('load', () => ScrollTrigger.refresh())
+        window.addEventListener('load', () => ScrollTrigger.refresh())
+      }
     }
+  }
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(init)
+  } else {
+    setTimeout(init, 200)
   }
 </script>

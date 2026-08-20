@@ -1,5 +1,11 @@
 ---
-import { events } from '@/data/events'
+import type { Event } from '@/sanity/lib/events'
+
+interface Props {
+  events: Event[]
+}
+
+const { events } = Astro.props
 
 const dateFormatter = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'short' })
 const monthFormatter = new Intl.DateTimeFormat('es-PE', { month: 'short' })
@@ -26,7 +32,7 @@ const monthFormatter = new Intl.DateTimeFormat('es-PE', { month: 'short' })
         return (
           <div
             data-reveal
-            class:list={['opacity-0 translate-y-6 relative rounded-2xl p-7 flex gap-6', e.featured && 'lg:col-span-2']}
+            class:list={['opacity-0 translate-y-6 relative rounded-2xl overflow-hidden flex flex-col', e.featured && 'lg:col-span-2']}
             style={{
               background: e.featured
                 ? 'linear-gradient(135deg, rgba(229,169,60,0.12) 0%, rgba(37,99,235,0.08) 100%)'
@@ -35,62 +41,82 @@ const monthFormatter = new Intl.DateTimeFormat('es-PE', { month: 'short' })
               backdropFilter: 'blur(12px)',
             }}
           >
-            {/* Date badge */}
-            <div
-              class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex flex-col items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${e.accent}55` }}
-            >
-              <span class="heading font-extrabold" style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', color: e.accent, lineHeight: 1 }}>
-                {dateFormatter.format(d).split(' ')[0]}
-              </span>
-              <span class="text-[10px] uppercase tracking-widest text-white/50 mt-1" style={{ fontFamily: 'Inter, sans-serif' }}>
-                {monthFormatter.format(d).replace('.', '')}
-              </span>
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-2 mb-3">
-                <span
-                  class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide"
-                  style={{ background: `${e.accent}22`, color: e.accent, fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+            {e.photoUrl && (
+              <div class="relative">
+                <img src={e.photoUrl} alt="" width="900" height="506" class="w-full h-48 sm:h-56 object-cover" />
+                <div
+                  class="absolute top-4 left-4 w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex flex-col items-center justify-center"
+                  style={{ background: 'rgba(15,19,28,0.75)', border: `1px solid ${e.accent}55`, backdropFilter: 'blur(6px)' }}
                 >
-                  {e.type}
-                </span>
-                {e.featured && (
-                  <span class="text-xs font-bold px-3 py-1 rounded-full" style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-                    Próxima edición
+                  <span class="heading font-extrabold" style={{ fontSize: 'clamp(1rem, 2vw, 1.3rem)', color: e.accent, lineHeight: 1 }}>
+                    {dateFormatter.format(d).split(' ')[0]}
                   </span>
-                )}
+                  <span class="text-[9px] uppercase tracking-widest text-white/60 mt-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+                    {monthFormatter.format(d).replace('.', '')}
+                  </span>
+                </div>
               </div>
+            )}
 
-              <h2 class="heading font-bold text-white mb-1" style={{ fontSize: '1.25rem', letterSpacing: '-0.01em' }}>
-                {e.title}
-              </h2>
-              <p class="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: e.accent, fontFamily: 'Inter, sans-serif' }}>
-                {e.tagline}
-              </p>
-              <p class="text-white/55 text-sm leading-relaxed mb-5" style={{ fontFamily: 'Inter, sans-serif' }}>
-                {e.desc}
-              </p>
+            <div class="flex gap-6 p-7 flex-1">
+              {!e.photoUrl && (
+                <div
+                  class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex flex-col items-center justify-center"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${e.accent}55` }}
+                >
+                  <span class="heading font-extrabold" style={{ fontSize: 'clamp(1.2rem, 2vw, 1.6rem)', color: e.accent, lineHeight: 1 }}>
+                    {dateFormatter.format(d).split(' ')[0]}
+                  </span>
+                  <span class="text-[10px] uppercase tracking-widest text-white/50 mt-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+                    {monthFormatter.format(d).replace('.', '')}
+                  </span>
+                </div>
+              )}
 
-              <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 text-sm text-white/60" style={{ fontFamily: 'Inter, sans-serif' }}>
-                <span class="flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
-                  {e.modality}
-                </span>
-                <span class="flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
-                  {e.duration}
-                </span>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                  <span
+                    class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide"
+                    style={{ background: `${e.accent}22`, color: e.accent, fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                  >
+                    {e.type}
+                  </span>
+                  {e.featured && (
+                    <span class="text-xs font-bold px-3 py-1 rounded-full" style={{ background: '#E5A93C', color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                      Próxima edición
+                    </span>
+                  )}
+                </div>
+
+                <h2 class="heading font-bold text-white mb-1" style={{ fontSize: '1.25rem', letterSpacing: '-0.01em' }}>
+                  {e.title}
+                </h2>
+                <p class="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: e.accent, fontFamily: 'Inter, sans-serif' }}>
+                  {e.tagline}
+                </p>
+                <p class="text-white/55 text-sm leading-relaxed mb-5" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  {e.desc}
+                </p>
+
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-6 text-sm text-white/60" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
+                    {e.modality}
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: e.accent }} />
+                    {e.duration}
+                  </span>
+                </div>
+
+                <a
+                  href={e.link}
+                  class="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all duration-200 hover:scale-105"
+                  style={{ background: e.accent, color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
+                >
+                  Reservar mi cupo →
+                </a>
               </div>
-
-              <a
-                href="#contacto"
-                class="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl transition-all duration-200 hover:scale-105"
-                style={{ background: e.accent, color: '#0F131C', fontFamily: 'Plus Jakarta Sans, sans-serif' }}
-              >
-                Reservar mi cupo →
-              </a>
             </div>
           </div>
         )
