@@ -32,7 +32,7 @@ export const policies: PolicySection[] = [
           },
           {
             type: 'p',
-            text: 'Razón social: [Completar razón social] · RUC: [Completar RUC] · Domicilio fiscal: [Completar dirección].',
+            text: 'Razón social: Alo Studio E.I.R.L. · RUC: 10779229837.',
           },
         ],
       },
