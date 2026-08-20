@@ -1,7 +1,11 @@
 ---
 import AloLogo from './AloLogo.astro'
 
-const socials = ['Instagram', 'LinkedIn', 'Behance']
+const socials = [
+  { label: 'Instagram', href: 'https://www.instagram.com/alostudio.pe/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/cynthiaalondraleonabal/' },
+  { label: 'Behance', href: 'https://www.behance.net/cynthiaalondraLA' },
+]
 ---
 
 <footer class="py-10 px-6" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
@@ -26,8 +30,8 @@ const socials = ['Instagram', 'LinkedIn', 'Behance']
         Cookies
       </button>
       {socials.map((s) => (
-        <a href="#" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
-          {s}
+        <a href={s.href} target="_blank" rel="noopener noreferrer" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+          {s.label}
         </a>
       ))}
     </div>
