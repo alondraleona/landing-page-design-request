@@ -28,11 +28,11 @@ export const policies: PolicySection[] = [
         blocks: [
           {
             type: 'p',
-            text: 'Este sitio web (alostudio.pe y subdominios asociados) es operado por Alo Studio ("nosotros", "el Studio"), con domicilio en Lima, Perú. Para cualquier consulta legal puedes escribirnos a hola@alostudio.pe.',
+            text: 'Este sitio web (alostudio.pe y subdominios asociados) es operado por Cynthia Alondra León Abal, persona natural con negocio bajo el nombre comercial "Alo Studio" ("nosotros", "el Studio"), con domicilio en Lima, Perú. Para cualquier consulta legal puedes escribirnos a hola@alostudio.pe.',
           },
           {
             type: 'p',
-            text: 'Razón social: Alo Studio E.I.R.L. · RUC: 10779229837.',
+            text: 'Titular: Cynthia Alondra León Abal · RUC: 10779229837.',
           },
         ],
       },
