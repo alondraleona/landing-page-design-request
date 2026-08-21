@@ -1,6 +1,13 @@
 ---
 import AloLogo from './AloLogo.astro'
 
+// eventos.alostudio.pe rewrites every path to the events page (see
+// astro.config.mjs), so relative links like "/nosotros" would just reload
+// this same landing page instead of navigating anywhere — they need to point
+// at the main domain explicitly when this footer renders there.
+const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
+const mainSite = 'https://alostudio.pe'
+
 const socials = [
   {
     label: 'Instagram',
@@ -47,16 +54,22 @@ const socials = [
         © 2025 aló Studio · Lima, Perú · Todos los derechos reservados
       </p>
       <div class="flex items-center gap-5">
-        <a href="/nosotros" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <a href={isEventsHome ? `${mainSite}/nosotros` : '/nosotros'} class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
           Nosotros
         </a>
-        <a href="/servicios#proceso" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <a href={isEventsHome ? `${mainSite}/servicios#proceso` : '/servicios#proceso'} class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
           Proceso
         </a>
-        <a href="https://eventos.alostudio.pe" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Eventos
-        </a>
-        <a href="/politicas" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+        {isEventsHome ? (
+          <a href={mainSite} class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+            alostudio.pe
+          </a>
+        ) : (
+          <a href="https://eventos.alostudio.pe" class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Eventos
+          </a>
+        )}
+        <a href={isEventsHome ? `${mainSite}/politicas` : '/politicas'} class="text-white/50 hover:text-white text-xs transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
           Políticas
         </a>
         <button
