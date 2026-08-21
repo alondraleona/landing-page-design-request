@@ -53,4 +53,17 @@ export const services = [
     ],
     accent: '#7BAAF7',
   },
+  {
+    icon: '⌖',
+    title: 'SEO / Posicionamiento Web',
+    tagline: 'Que te encuentren antes que a la competencia',
+    desc: 'Trabajamos tu web para que aparezca en los primeros resultados de Google cuando alguien busca lo que ofreces — no con trucos, sino con una estrategia real de contenido y estructura técnica.',
+    features: [
+      'Auditoría SEO técnica',
+      'Optimización on-page (títulos, estructura, velocidad)',
+      'Estrategia de contenido / blog',
+      'Reporte mensual de posiciones',
+    ],
+    accent: '#2563EB',
+  },
 ]
