@@ -15,7 +15,7 @@ const { slug } = Astro.params
 
 const post = await sanityClient.fetch(
   `*[_type == "post" && slug.current == $slug][0]{
-    title, excerpt, coverImage, body, publishedAt, tags, videoUrl,
+    title, excerpt, coverImage, body, publishedAt, tags, videoUrl, _updatedAt,
     audioFile{asset->{url}}
   }`,
   { slug },
@@ -27,18 +27,59 @@ if (!post) {
 
 const dateFormatter = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric' })
 
-const wordCount = (post.body ?? [])
+const plainText = (post.body ?? [])
   .filter((block: any) => block._type === 'block')
   .flatMap((block: any) => block.children ?? [])
   .map((span: any) => span.text ?? '')
   .join(' ')
-  .split(/\s+/)
-  .filter(Boolean).length
+  .trim()
+
+const wordCount = plainText.split(/\s+/).filter(Boolean).length
 const readingMinutes = Math.max(1, Math.round(wordCount / 200))
+
+const fallbackDescription = 'Ideas sobre diseño, desarrollo web y marca, escritas desde aló Studio.'
+const description = post.excerpt?.trim()
+  ? post.excerpt
+  : plainText
+    ? plainText.slice(0, 150).trim() + (plainText.length > 150 ? '…' : '')
+    : fallbackDescription
+
+const coverImageUrl = post.coverImage
+  ? urlFor(post.coverImage).width(1200).height(675).fit('crop').auto('format').url()
+  : undefined
 
 const video = post.videoUrl ? await resolveVideoEmbed(post.videoUrl) : null
 
 const postUrl = new URL(`/blog/${slug}`, Astro.site).toString()
+const siteLogoUrl = new URL('/favicon/webclip-512x512.png', Astro.site).toString()
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description,
+  image: [coverImageUrl ?? siteLogoUrl],
+  datePublished: post.publishedAt,
+  dateModified: post._updatedAt ?? post.publishedAt,
+  author: {
+    '@type': 'Organization',
+    name: 'Alo Studio',
+    url: 'https://alostudio.pe',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Alo Studio',
+    logo: {
+      '@type': 'ImageObject',
+      url: siteLogoUrl,
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': postUrl,
+  },
+}
+
 const shareLinks = [
   { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${post.title} ${postUrl}`)}` },
   { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}` },
@@ -49,8 +90,13 @@ const shareLinks = [
 
 <Layout
   title={`${post.title} | Alo Studio Blog`}
-  description={post.excerpt ?? ''}
+  description={description}
   path={`/blog/${slug}`}
+  image={coverImageUrl}
+  type="article"
+  publishedTime={post.publishedAt}
+  tags={post.tags}
+  jsonLd={jsonLd}
 >
   <article class="pt-32 pb-28 px-6">
     <div class="max-w-2xl mx-auto">
@@ -76,10 +122,12 @@ const shareLinks = [
         </div>
       )}
 
-      {post.coverImage && (
+      {coverImageUrl && (
         <img
-          src={urlFor(post.coverImage).width(1200).height(675).fit('crop').auto('format').url()}
+          src={coverImageUrl}
           alt={post.title}
+          width="1200"
+          height="675"
           class="w-full rounded-2xl mb-12 object-cover"
         />
       )}

@@ -9,11 +9,18 @@ interface Props {
   title: string
   description: string
   path: string
+  image?: string
+  type?: 'website' | 'article'
+  publishedTime?: string
+  tags?: string[]
+  jsonLd?: Record<string, unknown>
 }
-const { title, description, path } = Astro.props
+const { title, description, path, image, type = 'website', publishedTime, tags, jsonLd } = Astro.props
 const canonicalUrl = new URL(path, Astro.site)
-const ogImageUrl = new URL('/favicon/webclip-512x512.png', Astro.site)
+const ogImageUrl = image ?? new URL('/favicon/webclip-512x512.png', Astro.site).toString()
 const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
+// Escape "</" so a value inside jsonLd (e.g. a title) can't prematurely close the <script> tag.
+const jsonLdString = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : null
 ---
 
 <!doctype html>
@@ -39,7 +46,7 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:site_name" content="Alo Studio" />
     <meta property="og:locale" content="es_PE" />
     <meta property="og:url" content={canonicalUrl} />
@@ -48,6 +55,13 @@ const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    {type === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {type === 'article' && tags && tags.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    {jsonLdString && <script type="application/ld+json" set:html={jsonLdString} />}
 
     <meta name="google-site-verification" content="05-Qe9nbFHZC0gZ8mFEE-zTM3178xbitFdWKlec22GI" />
 
