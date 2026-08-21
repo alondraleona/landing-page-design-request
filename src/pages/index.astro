@@ -5,7 +5,6 @@ import ImpactSection from '../components/ImpactSection.astro'
 import ProjectsCarousel from '../components/ProjectsCarousel'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
 import ServicesPostits from '../components/ServicesPostits.astro'
-import SpeedCheck from '../components/SpeedCheck'
 import BlogPreview from '../components/BlogPreview.astro'
 import EventsList from '../components/EventsList.astro'
 import EventsTicker from '../components/EventsTicker.astro'
@@ -93,7 +92,6 @@ if (isEventsHome) {
     <ProjectsCarousel client:visible projects={projects} />
     <VideoReelsMarquee reels={reels} />
     <ServicesPostits />
-    <SpeedCheck client:visible />
     <BlogPreview />
   </Layout>
 )}

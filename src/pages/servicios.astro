@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import Services from '../components/Services.astro'
 import ProcessTimeline from '../components/ProcessTimeline.astro'
+import SpeedCheck from '../components/SpeedCheck'
 ---
 
 <Layout
@@ -11,4 +12,5 @@ import ProcessTimeline from '../components/ProcessTimeline.astro'
 >
   <Services />
   <ProcessTimeline />
+  <SpeedCheck client:visible />
 </Layout>
