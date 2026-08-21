@@ -1,4 +1,15 @@
 ---
+const tools = [
+  { name: 'Figma', accent: '#2563EB', pos: 'top-[-6%] left-[8%]', delay: 0 },
+  { name: 'Webflow', accent: '#E5A93C', pos: 'top-[2%] right-[-4%]', delay: 0.3 },
+  { name: 'Photoshop', accent: '#7BAAF7', pos: 'top-[38%] left-[-10%]', delay: 0.6 },
+  { name: 'Illustrator', accent: '#E5A93C', pos: 'top-[40%] right-[-12%]', delay: 0.9 },
+  { name: 'Miro', accent: '#7BAAF7', pos: 'bottom-[8%] left-[-2%]', delay: 1.2 },
+  { name: 'Google Analytics', accent: '#2563EB', pos: 'bottom-[-6%] right-[10%]', delay: 1.5 },
+  { name: 'GitHub', accent: '#E5A93C', pos: 'bottom-[-8%] left-[22%]', delay: 1.8 },
+  { name: 'Sketch', accent: '#7BAAF7', pos: 'top-[-8%] right-[26%]', delay: 2.1 },
+]
+
 const pillars = [
   {
     icon: '◇',
@@ -34,6 +45,50 @@ const pillars = [
         La persona detrás de<br />
         <span style={{ color: '#2563EB' }}>Alo Studio</span>
       </h2>
+    </div>
+
+    <div data-reveal class="opacity-0 translate-y-6 flex justify-center mb-16">
+      <div class="relative w-[15rem] h-[15rem] sm:w-[17rem] sm:h-[17rem]">
+        <div
+          class="absolute inset-0 rounded-full overflow-hidden flex items-center justify-center"
+          style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7BAAF7 100%)', border: '1px solid rgba(255,255,255,0.12)' }}
+        >
+          <img
+            src="/images/cynthia-alondra.jpg"
+            alt="Cynthia Alondra León Abal, fundadora de Alo Studio"
+            class="w-full h-full object-cover"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+          />
+          <span
+            class="hidden w-full h-full items-center justify-center heading font-extrabold"
+            style={{ fontSize: '3.5rem', color: 'rgba(255,255,255,0.85)' }}
+          >
+            CA
+          </span>
+        </div>
+
+        {tools.map((t) => (
+          <div
+            class={`absolute ${t.pos} animate-float`}
+            style={{ animationDelay: `${t.delay}s` }}
+          >
+            <span
+              class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold"
+              style={{
+                background: 'rgba(15,19,28,0.85)',
+                border: `1px solid ${t.accent}55`,
+                boxShadow: `0 0 20px ${t.accent}33`,
+                color: t.accent,
+                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                backdropFilter: 'blur(6px)',
+              }}
+            >
+              {t.name}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
