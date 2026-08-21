@@ -1,14 +1,32 @@
 ---
-const tools = [
-  { name: 'Figma', accent: '#2563EB', pos: 'top-[-6%] left-[8%]', delay: 0 },
-  { name: 'Webflow', accent: '#E5A93C', pos: 'top-[2%] right-[-4%]', delay: 0.3 },
-  { name: 'Photoshop', accent: '#7BAAF7', pos: 'top-[38%] left-[-10%]', delay: 0.6 },
-  { name: 'Illustrator', accent: '#E5A93C', pos: 'top-[40%] right-[-12%]', delay: 0.9 },
-  { name: 'Miro', accent: '#7BAAF7', pos: 'bottom-[8%] left-[-2%]', delay: 1.2 },
-  { name: 'Google Analytics', accent: '#2563EB', pos: 'bottom-[-6%] right-[10%]', delay: 1.5 },
-  { name: 'GitHub', accent: '#E5A93C', pos: 'bottom-[-8%] left-[22%]', delay: 1.8 },
-  { name: 'Sketch', accent: '#7BAAF7', pos: 'top-[-8%] right-[26%]', delay: 2.1 },
+const toolNames = [
+  { name: 'Figma', accent: '#2563EB' },
+  { name: 'Sketch', accent: '#7BAAF7' },
+  { name: 'Webflow', accent: '#E5A93C' },
+  { name: 'Photoshop', accent: '#2563EB' },
+  { name: 'Illustrator', accent: '#E5A93C' },
+  { name: 'Hotjar', accent: '#7BAAF7' },
+  { name: 'Maze', accent: '#2563EB' },
+  { name: 'Clarity', accent: '#E5A93C' },
+  { name: 'Miro', accent: '#7BAAF7' },
+  { name: 'Google Analytics', accent: '#2563EB' },
+  { name: 'Data Analytics', accent: '#E5A93C' },
+  { name: 'Power BI', accent: '#7BAAF7' },
+  { name: 'HTML & CSS', accent: '#2563EB' },
+  { name: 'VS Code', accent: '#E5A93C' },
+  { name: 'GitHub', accent: '#7BAAF7' },
+  { name: 'Jira & Asana', accent: '#2563EB' },
 ]
+
+// Evenly distributed around the photo on an ellipse, alternating radius so
+// adjacent labels (which vary a lot in length) don't collide.
+const tools = toolNames.map((t, i) => {
+  const angle = (i / toolNames.length) * Math.PI * 2 - Math.PI / 2
+  const radius = i % 2 === 0 ? 44 : 50
+  const left = 50 + radius * Math.cos(angle)
+  const top = 50 + radius * Math.sin(angle)
+  return { ...t, left: left.toFixed(2), top: top.toFixed(2), delay: (i % 6) * 0.35 }
+})
 
 const pillars = [
   {
@@ -47,10 +65,11 @@ const pillars = [
       </h2>
     </div>
 
-    <div data-reveal class="opacity-0 translate-y-6 flex justify-center mb-16">
-      <div class="relative w-[15rem] h-[15rem] sm:w-[17rem] sm:h-[17rem]">
+    <div data-reveal class="opacity-0 translate-y-6 flex flex-col items-center mb-16">
+      {/* Desktop: photo with tags orbiting around it */}
+      <div class="relative hidden lg:block w-[38rem] h-[38rem] max-w-full">
         <div
-          class="absolute inset-0 rounded-full overflow-hidden flex items-center justify-center"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[15rem] h-[15rem] rounded-full overflow-hidden flex items-center justify-center"
           style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7BAAF7 100%)', border: '1px solid rgba(255,255,255,0.12)' }}
         >
           <img
@@ -70,13 +89,13 @@ const pillars = [
 
         {tools.map((t) => (
           <div
-            class={`absolute ${t.pos} animate-float`}
-            style={{ animationDelay: `${t.delay}s` }}
+            class="absolute -translate-x-1/2 -translate-y-1/2 animate-float"
+            style={{ top: `${t.top}%`, left: `${t.left}%`, animationDelay: `${t.delay}s` }}
           >
             <span
-              class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold"
+              class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold"
               style={{
-                background: 'rgba(15,19,28,0.85)',
+                background: 'rgba(15,19,28,0.9)',
                 border: `1px solid ${t.accent}55`,
                 boxShadow: `0 0 20px ${t.accent}33`,
                 color: t.accent,
@@ -88,6 +107,47 @@ const pillars = [
             </span>
           </div>
         ))}
+      </div>
+
+      {/* Mobile / tablet: photo, then tags wrap below it */}
+      <div class="lg:hidden flex flex-col items-center gap-8">
+        <div
+          class="w-[13rem] h-[13rem] sm:w-[15rem] sm:h-[15rem] rounded-full overflow-hidden flex items-center justify-center"
+          style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7BAAF7 100%)', border: '1px solid rgba(255,255,255,0.12)' }}
+        >
+          <img
+            src="/images/cynthia-alondra.jpg"
+            alt="Cynthia Alondra León Abal, fundadora de Alo Studio"
+            class="w-full h-full object-cover"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+          />
+          <span
+            class="hidden w-full h-full items-center justify-center heading font-extrabold"
+            style={{ fontSize: '3rem', color: 'rgba(255,255,255,0.85)' }}
+          >
+            CA
+          </span>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 max-w-xl">
+          {tools.map((t, i) => (
+            <span
+              class="animate-float whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold"
+              style={{
+                animationDelay: `${(i % 6) * 0.35}s`,
+                background: 'rgba(15,19,28,0.9)',
+                border: `1px solid ${t.accent}55`,
+                boxShadow: `0 0 20px ${t.accent}33`,
+                color: t.accent,
+                fontFamily: 'Plus Jakarta Sans, sans-serif',
+                backdropFilter: 'blur(6px)',
+              }}
+            >
+              {t.name}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
 
