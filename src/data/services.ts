@@ -40,4 +40,17 @@ export const services = [
     features: ['Calendario de contenido', 'Diseño de piezas y reels', 'Community management', 'Reportes de desempeño'],
     accent: '#2563EB',
   },
+  {
+    icon: '◍',
+    title: 'Mantenimiento Web',
+    tagline: 'Tu web siempre lista, sin que te preocupes',
+    desc: 'Te ayudo a definir el nombre de tu negocio, conseguir tu dominio y hosting, y mantener todo funcionando — para que no dependas de un proyecto nuevo cada vez que necesitas un cambio.',
+    features: [
+      'Definición de nombre y dominio disponible',
+      'Dominio + hosting gestionado',
+      'Cambios y actualizaciones mensuales',
+      'Monitoreo de seguridad y uptime',
+    ],
+    accent: '#7BAAF7',
+  },
 ]
