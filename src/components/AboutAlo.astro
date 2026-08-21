@@ -1,0 +1,108 @@
+---
+const pillars = [
+  {
+    icon: '◇',
+    label: 'Misión',
+    text: 'Ayudar a negocios en Perú a crecer con presencia digital que realmente funciona — sitios rápidos, claros y pensados para convertir, sin depender de un proyecto nuevo cada vez que necesitan un cambio.',
+    accent: '#2563EB',
+  },
+  {
+    icon: '✧',
+    label: 'Visión',
+    text: 'Ser el estudio de referencia en Perú para negocios que quieren una web profesional, sin las complicaciones ni los costos de una agencia tradicional — cercano, ágil y con resultados medibles.',
+    accent: '#E5A93C',
+  },
+]
+---
+
+<section id="sobre-alo" class="py-28 px-6 relative overflow-hidden">
+  <div
+    class="pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    style={{
+      background:
+        'radial-gradient(600px circle at 12% 15%, rgba(37,99,235,0.14), transparent 60%), radial-gradient(520px circle at 88% 85%, rgba(229,169,60,0.12), transparent 60%)',
+    }}
+  />
+
+  <div class="max-w-6xl mx-auto relative">
+    <div data-reveal class="opacity-0 translate-y-6 mb-16 max-w-2xl">
+      <span class="text-xs font-semibold tracking-widest uppercase mb-4 block" style={{ color: '#7BAAF7', fontFamily: 'Inter, sans-serif' }}>
+        — Sobre Alo
+      </span>
+      <h2 class="heading font-extrabold leading-tight" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.02em' }}>
+        La persona detrás de<br />
+        <span style={{ color: '#2563EB' }}>Alo Studio</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+      <div
+        data-reveal
+        class="opacity-0 translate-y-6 rounded-3xl p-8 md:p-10"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        <p class="text-white/70 leading-relaxed" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.05rem' }}>
+          Soy Cynthia Alondra León Abal, diseñadora UX/UI y fundadora de Alo Studio. Empecé en diseño gráfico en 2016 y
+          desde entonces trabajé en proyectos para bancos, retailers, inmobiliarias y startups — desde el rediseño de
+          la banca por internet de un banco internacional hasta e-commerce para marcas en Latinoamérica y
+          Norteamérica. Esa experiencia levantando requerimientos, validando flujos de usuario y coordinando equipos
+          multidisciplinarios es lo que traje a Alo Studio: no diseño por diseñar, sino soluciones pensadas para que
+          el negocio de cada cliente funcione mejor.
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        {pillars.map((p, i) => (
+          <div data-reveal class="opacity-0 translate-y-6">
+            <div
+              class="animate-float rounded-2xl p-6"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: `1px solid ${p.accent}33`,
+                boxShadow: `0 0 40px ${p.accent}22`,
+                animationDelay: `${i * 0.8}s`,
+              }}
+            >
+              <div class="flex items-center gap-3 mb-3">
+                <span
+                  class="w-9 h-9 rounded-full flex items-center justify-center text-base"
+                  style={{ background: `${p.accent}1A`, color: p.accent }}
+                >
+                  {p.icon}
+                </span>
+                <span class="heading font-bold text-sm uppercase tracking-wide" style={{ color: p.accent }}>{p.label}</span>
+              </div>
+              <p class="text-white/60 text-sm leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>{p.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap'
+
+  const section = document.querySelector('#sobre-alo')
+  if (section) {
+    const revealEls = section.querySelectorAll<HTMLElement>('[data-reveal]')
+
+    if (prefersReducedMotion()) {
+      gsap.set(revealEls, { opacity: 1, y: 0 })
+    } else {
+      gsap.to(revealEls, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        stagger: 0.1,
+        clearProps: 'transform',
+        scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+      })
+
+      window.addEventListener('load', () => ScrollTrigger.refresh())
+    }
+  }
+</script>
