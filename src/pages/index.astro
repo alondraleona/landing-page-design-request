@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Hero from '../components/Hero.astro'
-import AboutAlo from '../components/AboutAlo.astro'
 import ImpactSection from '../components/ImpactSection.astro'
 import ProjectsCarousel from '../components/ProjectsCarousel'
 import VideoReelsMarquee from '../components/VideoReelsMarquee.astro'
@@ -89,7 +88,6 @@ if (isEventsHome) {
     jsonLd={[organizationJsonLd, websiteJsonLd]}
   >
     <Hero />
-    <AboutAlo />
     <ImpactSection />
     <ProjectsCarousel client:visible projects={projects} />
     <VideoReelsMarquee reels={reels} />
