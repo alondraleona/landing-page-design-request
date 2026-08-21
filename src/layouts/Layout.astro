@@ -16,7 +16,12 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 const { title, description, path, image, type = 'website', publishedTime, tags, jsonLd } = Astro.props
-const canonicalUrl = new URL(path, Astro.site)
+// Every route builds to a directory with an index.html (e.g. /portafolio/index.html), so the
+// servable URL always has a trailing slash. Without normalizing here, a canonical/og:url missing
+// the slash points at a URL that 307-redirects back to itself, which search engines read as a
+// contradictory signal and can exclude the page from the index over.
+const normalizedPath = path === '/' || path.endsWith('/') ? path : `${path}/`
+const canonicalUrl = new URL(normalizedPath, Astro.site)
 const ogImageUrl = image ?? new URL('/favicon/webclip-512x512.png', Astro.site).toString()
 const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
 // Each entry renders as its own <script> tag; "</" is escaped so a value inside jsonLd
