@@ -13,14 +13,15 @@ interface Props {
   type?: 'website' | 'article'
   publishedTime?: string
   tags?: string[]
-  jsonLd?: Record<string, unknown>
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 const { title, description, path, image, type = 'website', publishedTime, tags, jsonLd } = Astro.props
 const canonicalUrl = new URL(path, Astro.site)
 const ogImageUrl = image ?? new URL('/favicon/webclip-512x512.png', Astro.site).toString()
 const isEventsHome = import.meta.env.PUBLIC_EVENTS_HOME === 'true'
-// Escape "</" so a value inside jsonLd (e.g. a title) can't prematurely close the <script> tag.
-const jsonLdString = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : null
+// Each entry renders as its own <script> tag; "</" is escaped so a value inside jsonLd
+// (e.g. a title) can't prematurely close the <script> tag.
+const jsonLdEntries = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 ---
 
 <!doctype html>
@@ -61,7 +62,9 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : 
     )}
     {type === 'article' && tags && tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
-    {jsonLdString && <script type="application/ld+json" set:html={jsonLdString} />}
+    {jsonLdEntries.map((entry) => (
+      <script type="application/ld+json" set:html={JSON.stringify(entry).replace(/</g, '\\u003c')} />
+    ))}
 
     <meta name="google-site-verification" content="05-Qe9nbFHZC0gZ8mFEE-zTM3178xbitFdWKlec22GI" />
 

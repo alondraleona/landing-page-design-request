@@ -23,6 +23,40 @@ let projects: ReturnType<typeof resolveProject>[] = []
 let reels: ReturnType<typeof resolveVideoReel>[] = []
 let events: ReturnType<typeof resolveEvent>[] = []
 
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://alostudio.pe'
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Alo Studio',
+  url: siteUrl,
+  logo: new URL('/favicon/webclip-512x512.png', Astro.site).toString(),
+  sameAs: [
+    'https://www.instagram.com/alostudio.pe/',
+    'https://www.linkedin.com/in/cynthiaalondraleonabal/',
+    'https://www.behance.net/cynthiaalondraLA',
+  ],
+}
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Alo Studio',
+  url: siteUrl,
+  inLanguage: 'es-PE',
+  hasPart: {
+    '@type': 'SiteNavigationElement',
+    name: ['Inicio', 'Servicios', 'Portafolio', 'Blog', 'Eventos'],
+    url: [
+      `${siteUrl}/`,
+      `${siteUrl}/servicios`,
+      `${siteUrl}/portafolio`,
+      `${siteUrl}/blog`,
+      'https://eventos.alostudio.pe',
+    ],
+  },
+}
+
 if (isEventsHome) {
   const today = new Date().toISOString().slice(0, 10)
   const rawEvents = await sanityClient.fetch(`*[_type == "event" && date >= $today] | order(date asc)`, { today })
@@ -52,6 +86,7 @@ if (isEventsHome) {
     title="Alo Studio | Diseño y Desarrollo Web"
     description="Agencia digital en Lima, Perú. Diseñamos y desarrollamos sitios web, tiendas online y automatizaciones que convierten. +20 proyectos entregados, 98% de satisfacción."
     path="/"
+    jsonLd={[organizationJsonLd, websiteJsonLd]}
   >
     <Hero />
     <ImpactSection />
