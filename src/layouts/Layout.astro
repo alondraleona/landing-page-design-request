@@ -110,6 +110,21 @@ const jsonLdEntries = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
       gtag('config', 'G-KFF4J6MGKH')
     </script>
 
+    {isEventsHome && (
+      <>
+        <!-- Google tag (gtag.js) -->
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-K63QMVM6TT"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || []
+          function gtag() {
+            dataLayer.push(arguments)
+          }
+          gtag('js', new Date())
+          gtag('config', 'G-K63QMVM6TT')
+        </script>
+      </>
+    )}
+
     <!-- Meta Pixel Code -->
     <script is:inline>
       !(function (f, b, e, v, n, t, s) {
