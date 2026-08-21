@@ -62,6 +62,27 @@ export default function Navbar({ eventsOnly = false }: { eventsOnly?: boolean })
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.07)' : 'none',
       }}
     >
+      <div
+        className="hidden md:flex items-center justify-center gap-6 px-6 py-1.5"
+        style={{ background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <a
+          href="mailto:hola@alostudio.pe"
+          className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors duration-200"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+        >
+          <span aria-hidden="true">✉</span> hola@alostudio.pe
+        </a>
+        <span className="text-white/20">·</span>
+        <a
+          href="tel:+51975572615"
+          className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors duration-200"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+        >
+          <span aria-hidden="true">📞</span> +51 975 572 615
+        </a>
+      </div>
+
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="/"><AloLogo size="md" /></a>
 
